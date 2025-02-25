@@ -16,7 +16,7 @@ import TimelineConnector from "@mui/lab/TimelineConnector";
 import TimelineDot from "@mui/lab/TimelineDot";
 import Brightness1OutlinedIcon from "@mui/icons-material/Brightness1Outlined";
 import CheckIcon from "@mui/icons-material/Check";
-import { DeleteBranchModal } from "./DeleteBranchModal";
+import { DeleteBranchModal } from "../Modals/DeleteBranchModal";
 
 interface ICustomizedTimeline {
   branchName: string;

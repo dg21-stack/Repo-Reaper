@@ -1,10 +1,10 @@
 import React from "react";
 import "./App.css";
-import { GridContainer } from "./components/GridContainer";
+import { GridContainer } from "./components/Home/GridContainer";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Box, CssBaseline, Stack } from "@mui/material";
-import RepoHeader from "./components/RepoHeader";
-import { BranchHistory } from "./components/BranchHistory";
+import RepoHeader from "./components/Wrapper/RepoHeader";
+import { BranchHistory } from "./components/BranchHistory/BranchHistory";
 
 function App() {
   return (

@@ -1,7 +1,7 @@
 const { app, BrowserWindow, protocol } = require("electron");
 const path = require("path");
 const url = require("url");
- 
+
 // Create the native browser window.
 function createWindow() {
   const mainWindow = new BrowserWindow({
@@ -13,7 +13,7 @@ function createWindow() {
       preload: path.join(__dirname, "preload.js"),
     },
   });
- 
+
   // In production, set the initial browser path to the local bundle generated
   // by the Create React App build process.
   // In development, set it to localhost to allow live/hot-reloading.
@@ -25,13 +25,13 @@ function createWindow() {
       })
     : "http://localhost:3000";
   mainWindow.loadURL(appURL);
- 
+
   // Automatically open Chrome's DevTools in development mode.
   if (!app.isPackaged) {
     mainWindow.webContents.openDevTools();
   }
 }
- 
+
 // Setup a local proxy to adjust the paths of requested files when loading
 // them from the local production bundle (e.g.: local fonts, etc...).
 function setupLocalFilesNormalizerProxy() {
@@ -46,14 +46,14 @@ function setupLocalFilesNormalizerProxy() {
     },
   );
 }
- 
+
 // This method will be called when Electron has finished its initialization and
 // is ready to create the browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
   createWindow();
   setupLocalFilesNormalizerProxy();
- 
+
   app.on("activate", function () {
     // On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
@@ -62,7 +62,7 @@ app.whenReady().then(() => {
     }
   });
 });
- 
+
 // Quit when all windows are closed, except on macOS.
 // There, it's common for applications and their menu bar to stay active until
 // the user quits  explicitly with Cmd + Q.
@@ -71,7 +71,7 @@ app.on("window-all-closed", function () {
     app.quit();
   }
 });
- 
+
 // If your app has no need to navigate or only needs to navigate to known pages,
 // it is a good idea to limit navigation outright to that known scope,
 // disallowing any other kinds of navigation.
@@ -79,10 +79,9 @@ const allowedNavigationDestinations = "https://my-electron-app.com";
 app.on("web-contents-created", (event, contents) => {
   contents.on("will-navigate", (event, navigationUrl) => {
     const parsedUrl = new URL(navigationUrl);
- 
+
     if (!allowedNavigationDestinations.includes(parsedUrl.origin)) {
       event.preventDefault();
     }
   });
 });
- 

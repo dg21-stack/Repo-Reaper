@@ -9,11 +9,11 @@ import {
   Grid,
   Fade,
 } from "@mui/material";
-import { ButtonWithDropdown } from "./LeftListMenu";
-import { LeftMenuListItem } from "./LeftMenuListItem";
-import RepoHeader from "./RepoHeader";
-import { ButtonRow } from "./ButtonRow";
-import { PdfContainer } from "./EmbeddedBinariesComponent";
+import { ButtonWithDropdown } from "./HomeContainers/LeftListMenu";
+import { LeftMenuListItem } from "./HomeContainers/LeftMenuListItem";
+import RepoHeader from "../Wrapper/RepoHeader";
+import { ButtonRow } from "./HomeContainers/ButtonRow";
+import { PdfContainer } from "./HomeContainers/EmbeddedBinariesComponent";
 
 // Define the structure of a file/folder item
 interface FileStructureItem {

@@ -11,8 +11,8 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack"; // Import the back arrow icon
-import { formatTimestamp } from "./FormatTimestamp";
-import CustomizedTimeline from "./Timeline";
+import { formatTimestamp } from "../../Utils/FormatTimestamp";
+import CustomizedTimeline from "../Timelines/Timeline";
 
 interface IBranchHistoryModal {
   isOpen: boolean;
@@ -59,14 +59,23 @@ export const BranchHistoryModal = ({
   // Default: Group commands by commit ID
   useEffect(() => {
     if (isOpen && timelineData) {
-      const grouped = timelineData.commitHistory.reduce((acc, commit) => {
-        acc[commit.id] = {
-          id: commit.id,
-          time: commit.time,
-          commands: commit.commandHistory,
-        };
-        return acc;
-      }, {} as { [key: string]: { id: string; time: string; commands: { time: string; command: string }[] } });
+      const grouped = timelineData.commitHistory.reduce(
+        (acc, commit) => {
+          acc[commit.id] = {
+            id: commit.id,
+            time: commit.time,
+            commands: commit.commandHistory,
+          };
+          return acc;
+        },
+        {} as {
+          [key: string]: {
+            id: string;
+            time: string;
+            commands: { time: string; command: string }[];
+          };
+        }
+      );
 
       setGroupedHistory(grouped);
       setTitle(timelineData.title);
@@ -101,14 +110,23 @@ export const BranchHistoryModal = ({
   // Handler for connector clicks (reset to all commands)
   const connectorClickHandler = () => {
     if (timelineData) {
-      const grouped = timelineData.commitHistory.reduce((acc, commit) => {
-        acc[commit.id] = {
-          id: commit.id,
-          time: commit.time,
-          commands: commit.commandHistory,
-        };
-        return acc;
-      }, {} as { [key: string]: { id: string; time: string; commands: { time: string; command: string }[] } });
+      const grouped = timelineData.commitHistory.reduce(
+        (acc, commit) => {
+          acc[commit.id] = {
+            id: commit.id,
+            time: commit.time,
+            commands: commit.commandHistory,
+          };
+          return acc;
+        },
+        {} as {
+          [key: string]: {
+            id: string;
+            time: string;
+            commands: { time: string; command: string }[];
+          };
+        }
+      );
 
       setGroupedHistory(grouped);
       setTitle(timelineData.title);

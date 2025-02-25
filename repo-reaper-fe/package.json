@@ -23,6 +23,7 @@
     "elkjs": "^0.9.3",
     "graphology": "^0.25.4",
     "graphology-types": "^0.24.8",
+    "prettier": "^3.5.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-router-dom": "^7.1.5",
@@ -40,7 +41,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "electron": "electron .",
-    "dist": "electron-builder"
+    "dist": "electron-builder",
+    "pretty": "prettier --write \"./**/*.{js,jsx,mjs,cjs,ts,tsx,json}\""
   },
   "build": {
     "appId": "com.example.myapp",

@@ -6,7 +6,7 @@ import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 export const ButtonWithDropdown = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [branchAnchorEl, setBranchAnchorEl] = useState<null | HTMLElement>(
-    null
+    null,
   );
   const open = Boolean(anchorEl);
   const branchOpen = Boolean(branchAnchorEl);

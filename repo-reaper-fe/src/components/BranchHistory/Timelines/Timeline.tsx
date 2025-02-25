@@ -21,8 +21,8 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 import IconButton from "@mui/material/IconButton";
 import CheckIcon from "@mui/icons-material/Check";
-import { formatTimestamp } from "./FormatTimestamp";
-import { DeleteBranchModal } from "./DeleteBranchModal";
+import { formatTimestamp } from "../../Utils/FormatTimestamp";
+import { DeleteBranchModal } from "../Modals/DeleteBranchModal";
 
 interface ICustomizedTimeline {
   branchName: string;

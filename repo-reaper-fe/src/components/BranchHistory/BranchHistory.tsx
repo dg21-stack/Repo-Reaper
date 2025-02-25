@@ -22,19 +22,19 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import CustomizedTimeline from "./Timeline/Timeline";
-import { BranchHistoryModal } from "./Timeline/BranchHistoryModal";
+import CustomizedTimeline from "./Timelines/Timeline";
+import { BranchHistoryModal } from "./Modals/BranchHistoryModal";
 import {
   KeyboardArrowLeft,
   KeyboardArrowRight,
   Sort,
 } from "@mui/icons-material";
-import branchData from "../test-data/branchHistory.json"; // Import the updated JSON file
+import branchData from "../../test-data/branchHistory.json"; // Import the updated JSON file
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
-import ListViewTimeline from "./Timeline/ListViewTimeline";
-import { DeleteBranchModal } from "./Timeline/DeleteBranchModal";
+import ListViewTimeline from "./Timelines/ListViewTimeline";
+import { DeleteBranchModal } from "./Modals/DeleteBranchModal";
 
 export function BranchHistory() {
   const navigate = useNavigate();
@@ -193,8 +193,8 @@ export function BranchHistory() {
         sortDirection === "asc"
           ? "desc"
           : sortDirection === "desc"
-          ? null
-          : "asc";
+            ? null
+            : "asc";
     }
 
     sortBranches(criteria, newDirection);
@@ -367,8 +367,8 @@ export function BranchHistory() {
                   (sortDirection === "asc"
                     ? "↑"
                     : sortDirection === "desc"
-                    ? "↓"
-                    : "")}
+                      ? "↓"
+                      : "")}
               </MenuItem>
               <MenuItem
                 onClick={() => handleSortMenuItemClick("latestUpdatedTime")}
@@ -378,8 +378,8 @@ export function BranchHistory() {
                   (sortDirection === "asc"
                     ? "↑"
                     : sortDirection === "desc"
-                    ? "↓"
-                    : "")}
+                      ? "↓"
+                      : "")}
               </MenuItem>
               <MenuItem onClick={() => handleSortMenuItemClick("commitCount")}>
                 Sort by # of Commits{" "}
@@ -387,8 +387,8 @@ export function BranchHistory() {
                   (sortDirection === "asc"
                     ? "↑"
                     : sortDirection === "desc"
-                    ? "↓"
-                    : "")}
+                      ? "↓"
+                      : "")}
               </MenuItem>
             </Menu>
           </Box>
