@@ -21,7 +21,7 @@ const RepoHeader: React.FC<RepoHeaderProps> = ({ repoName }) => {
     >
       <Typography variant="h6">{repoName}</Typography>
       <Typography variant="h6" sx={{ fontWeight: "bold" }}>
-        Main Menu
+        Repo Reaper
       </Typography>
       <IconButton sx={{ color: "white" }}>
         <SettingsIcon />

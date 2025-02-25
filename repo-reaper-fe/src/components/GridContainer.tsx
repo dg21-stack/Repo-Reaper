@@ -1,5 +1,14 @@
 import React from "react";
-import { CssBaseline, Box, Stack, TextField, Button, Typography, Grid, Fade } from "@mui/material";
+import {
+  CssBaseline,
+  Box,
+  Stack,
+  TextField,
+  Button,
+  Typography,
+  Grid,
+  Fade,
+} from "@mui/material";
 import { ButtonWithDropdown } from "./LeftListMenu";
 import { LeftMenuListItem } from "./LeftMenuListItem";
 import RepoHeader from "./RepoHeader";
@@ -67,96 +76,121 @@ export const GridContainer = () => {
 
   return (
     <Fade in={true}>
-    <Grid container sx={{ height: "100vh", bgcolor: "#181818" }} spacing={0.5}>
-      {/* Top Bar */}
-      <Grid item xs={12}>
-        <Box sx={{ height: 60, bgcolor: "#36393f", borderBottom: "1px solid #333" }}>
-          <ButtonRow />
-        </Box>
-      </Grid>
+      <Grid
+        container
+        sx={{ height: "100vh", bgcolor: "#181818" }}
+        spacing={0.5}
+      >
+        {/* Top Bar */}
+        <Grid item xs={12}>
+          <Box
+            sx={{
+              height: 60,
+              bgcolor: "#36393f",
+              borderBottom: "1px solid #333",
+            }}
+          >
+            <ButtonRow />
+          </Box>
+        </Grid>
 
-      {/* Left Panel */}
-      <Grid item xs={3}>
-        <Box
-          sx={{
-            height: "calc(100vh - 120px)",
-            bgcolor: "#36393f",
-            overflow: "hidden",
-            display: "flex",
-            flexDirection: "column",
-            borderRight: "1px solid #333",
-          }}
-        >
-          <ButtonWithDropdown />
-          <Stack spacing={0} sx={{ mt: 2, flex: 1 }}>
-            {Object.values(fileStructure).map((item) => (
-              <LeftMenuListItem
-                key={item.id}
-                id={item.id}
-                name={item.name}
-                type={item.type}
-                level={item.level}
-                path={item.path}
-                isSelected={selectedId === item.id}
-                onClick={handleItemClick}
-              />
-            ))}
-          </Stack>
-
-          {/* Commit Section */}
-          <Box sx={{ p: 2, bgcolor: "#1e1e1e", borderTop: "1px solid #333", position: "absolute", bottom: 0, width: "100%" }}>
-            {gitState === "commit" ? (
-              <Stack spacing={2}>
-                <TextField
-                  fullWidth
-                  variant="outlined"
-                  placeholder="Enter commit message"
-                  value={commitMessage}
-                  onChange={(e) => setCommitMessage(e.target.value)}
-                  sx={{ bgcolor: "white" }}
+        {/* Left Panel */}
+        <Grid item xs={3}>
+          <Box
+            sx={{
+              height: "calc(100vh - 120px)",
+              bgcolor: "#36393f",
+              overflow: "hidden",
+              display: "flex",
+              flexDirection: "column",
+              borderRight: "1px solid #333",
+            }}
+          >
+            <ButtonWithDropdown />
+            <Stack spacing={0} sx={{ mt: 2, flex: 1 }}>
+              {Object.values(fileStructure).map((item) => (
+                <LeftMenuListItem
+                  key={item.id}
+                  id={item.id}
+                  name={item.name}
+                  type={item.type}
+                  level={item.level}
+                  path={item.path}
+                  isSelected={selectedId === item.id}
+                  onClick={handleItemClick}
                 />
+              ))}
+            </Stack>
+
+            {/* Commit Section */}
+            <Box
+              sx={{
+                p: 2,
+                bgcolor: "#1e1e1e",
+                borderTop: "1px solid #333",
+                position: "absolute",
+                bottom: 0,
+                width: "100%",
+              }}
+            >
+              {gitState === "commit" ? (
+                <Stack spacing={2}>
+                  <TextField
+                    fullWidth
+                    variant="outlined"
+                    placeholder="Enter commit message"
+                    value={commitMessage}
+                    onChange={(e) => setCommitMessage(e.target.value)}
+                    sx={{ bgcolor: "white" }}
+                  />
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    fullWidth
+                    onClick={handleCommit}
+                    sx={{
+                      bgcolor: "#7289da", // Purple color
+                      "&:hover": {
+                        bgcolor: "#3700b3",
+                      },
+                    }}
+                  >
+                    Commit
+                  </Button>
+                </Stack>
+              ) : (
                 <Button
                   variant="contained"
-                  color="primary"
+                  color="secondary"
                   fullWidth
-                  onClick={handleCommit}
+                  onClick={handlePush}
                   sx={{
-                    bgcolor: "#7289da", // Purple color
-                    '&:hover': {
-                      bgcolor: "#3700b3",
-                    }
+                    bgcolor: "#03dac6", // Teal
+                    "&:hover": {
+                      bgcolor: "#018786",
+                    },
                   }}
                 >
-                  Commit
+                  Push
                 </Button>
-              </Stack>
-            ) : (
-              <Button
-                variant="contained"
-                color="secondary"
-                fullWidth
-                onClick={handlePush}
-                sx={{
-                  bgcolor: "#03dac6", // Teal
-                  '&:hover': {
-                    bgcolor: "#018786",
-                  }
-                }}
-              >
-                Push
-              </Button>
-            )}
+              )}
+            </Box>
           </Box>
-        </Box>
-      </Grid>
+        </Grid>
 
-      {/* Right Panel */}
-      <Grid item xs={9}>
-        <Box sx={{ height: "calc(100vh - 120px)", bgcolor: "#36393f", overflow: "hidden" }}>
-          <PdfContainer selectedFile={selectedFile} />
-        </Box>
+        {/* Right Panel */}
+        <Grid item xs={9}>
+          <Box
+            sx={{
+              height: "calc(100vh - 120px)",
+              bgcolor: "#36393f",
+              overflow: "hidden",
+            }}
+          >
+            <PdfContainer selectedFile={selectedFile} />
+          </Box>
+        </Grid>
       </Grid>
-    </Grid>
     </Fade>
   );
 };

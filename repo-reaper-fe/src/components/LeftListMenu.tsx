@@ -5,7 +5,9 @@ import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 
 export const ButtonWithDropdown = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [branchAnchorEl, setBranchAnchorEl] = useState<null | HTMLElement>(null);
+  const [branchAnchorEl, setBranchAnchorEl] = useState<null | HTMLElement>(
+    null
+  );
   const open = Boolean(anchorEl);
   const branchOpen = Boolean(branchAnchorEl);
 
@@ -39,16 +41,20 @@ export const ButtonWithDropdown = () => {
         sx={{
           flexGrow: 1,
           bgcolor: "#7289da", // Purple color
-          '&:hover': {
+          "&:hover": {
             bgcolor: "#3700b3",
-          }
+          },
         }}
       >
         Select Branch
       </Button>
 
       {/* Branch Dropdown Menu */}
-      <Menu anchorEl={branchAnchorEl} open={branchOpen} onClose={handleBranchClose}>
+      <Menu
+        anchorEl={branchAnchorEl}
+        open={branchOpen}
+        onClose={handleBranchClose}
+      >
         {branches.map((branch) => (
           <MenuItem key={branch} onClick={handleBranchClose}>
             {branch}

@@ -11,7 +11,9 @@ export const PdfContainer = ({ selectedFile }: PdfContainerProps) => {
   const pathSegments = selectedFile?.path ? selectedFile.path.split("/") : [];
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", height: "80vh", p: 1 }}>
+    <Box
+      sx={{ display: "flex", flexDirection: "column", height: "80vh", p: 1 }}
+    >
       {/* Breadcrumbs */}
       <Box sx={{ p: 2 }}>
         <Breadcrumbs aria-label="breadcrumb" sx={{ color: "white" }}>
