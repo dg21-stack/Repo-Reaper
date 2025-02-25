@@ -4,13 +4,13 @@ import FolderIcon from "@mui/icons-material/Folder";
 import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
 
 interface ListItemProps {
-  id: string; // Unique identifier
+  id: string;
   name: string;
   type: string;
-  level: number; // Determines indentation
-  path: string; // Full path of the file/folder
-  isSelected: boolean; // Whether the item is selected
-  onClick: (id: string) => void; // Callback function when the item is clicked
+  level: number;
+  path: string;
+  isSelected: boolean;
+  onClick: (id: string) => void;
 }
 
 export const LeftMenuListItem: React.FC<ListItemProps> = ({
@@ -30,24 +30,23 @@ export const LeftMenuListItem: React.FC<ListItemProps> = ({
       sx={{
         pl: level * 2,
         cursor: "pointer",
-        backgroundColor: isSelected ? "#e0e0e0" : "transparent", // Grey out if selected
+        bgcolor: isSelected ? "#333" : "transparent", // Dark background if selected
         "&:hover": {
-          backgroundColor: "#f5f5f5", // Light grey on hover
+          bgcolor: "#444", // Slightly lighter dark background on hover
         },
       }}
-      onClick={() => onClick(id)} // Trigger onClick callback with the id
+      onClick={() => onClick(id)}
     >
-      {/* Icon based on type */}
       <Box>
         {type === "folder" ? (
-          <FolderIcon color="primary" />
+          <FolderIcon sx={{ color: "#bb86fc" }} />
         ) : (
-          <InsertDriveFileIcon color="action" />
+          <InsertDriveFileIcon sx={{ color: "#03dac6" }} />
         )}
       </Box>
-
-      {/* File/Folder Name */}
-      <Typography variant="body1">{name}</Typography>
+      <Typography variant="body1" sx={{ color: "white" }}>
+        {name}
+      </Typography>
     </Stack>
   );
 };

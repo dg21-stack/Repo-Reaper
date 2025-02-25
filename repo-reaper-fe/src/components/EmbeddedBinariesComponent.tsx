@@ -4,22 +4,14 @@ interface PdfContainerProps {
   selectedFile: {
     path: string;
     link: string | null;
-  } | null; // Selected file with path and link
+  } | null;
 }
 
 export const PdfContainer = ({ selectedFile }: PdfContainerProps) => {
-  // Split the file path into segments for the breadcrumb
   const pathSegments = selectedFile?.path ? selectedFile.path.split("/") : [];
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        height: "80vh", // Set a height for the parent container (e.g., 80% of viewport height)
-        p: 1,
-      }}
-    >
+    <Box sx={{ display: "flex", flexDirection: "column", height: "80vh", p: 1 }}>
       {/* Breadcrumbs */}
       <Box sx={{ p: 2 }}>
         <Breadcrumbs aria-label="breadcrumb" sx={{ color: "white" }}>
@@ -32,28 +24,28 @@ export const PdfContainer = ({ selectedFile }: PdfContainerProps) => {
       </Box>
 
       {/* PDF Viewer */}
-     {selectedFile?.link ? (
+      {selectedFile?.link && (
         <Paper
-        elevation={3}
-        sx={{
-          flex: 1, // Take up remaining space
-          display: "flex",
-          flexDirection: "column",
-          border: "2px solid #e0e0e0", // Add a border
-          borderRadius: "8px", // Rounded corners
-          overflow: "hidden", // Ensure the iframe doesn't overflow the Paper
-          backgroundColor: "#f5f5f5", // Light background color
-        }}
-      >
+          elevation={3}
+          sx={{
+            flex: 1,
+            display: "flex",
+            flexDirection: "column",
+            border: "2px solid #333",
+            borderRadius: "8px",
+            backgroundColor: "#121212",
+            overflow: "hidden",
+          }}
+        >
           <iframe
             src={selectedFile.link}
             width="100%"
-            height="100%" // Fill the parent container
+            height="100%"
             title="PDF Document"
-            style={{ border: "none", flex: 1 }} // Ensure iframe takes up remaining space
+            style={{ border: "none", flex: 1 }}
           />
-      </Paper>
-     ): (null)} 
+        </Paper>
+      )}
     </Box>
   );
 };

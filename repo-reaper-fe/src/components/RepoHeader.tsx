@@ -1,5 +1,5 @@
 import React from "react";
-import { Grid, Typography, IconButton } from "@mui/material";
+import { Stack, Typography, IconButton } from "@mui/material";
 import SettingsIcon from "@mui/icons-material/Settings";
 
 interface RepoHeaderProps {
@@ -8,31 +8,25 @@ interface RepoHeaderProps {
 
 const RepoHeader: React.FC<RepoHeaderProps> = ({ repoName }) => {
   return (
-    <Grid
-      container
+    <Stack
+      direction="row"
       alignItems="center"
       justifyContent="space-between"
-      sx={{ p: 1, width: "100%" }}
+      sx={{
+        width: "100%",
+        padding: "8px 16px",
+        bgcolor: "#212121",
+        color: "white",
+      }}
     >
-      {/* Left Side - Repo Name */}
-      <Grid item>
-        <Typography variant="h6">{repoName}</Typography>
-      </Grid>
-
-      {/* Middle - Main Menu */}
-      <Grid item>
-        <Typography variant="h6" sx={{ fontWeight: "bold" }}>
-          Main Menu
-        </Typography>
-      </Grid>
-
-      {/* Right Side - Settings Icon */}
-      <Grid item>
-        <IconButton>
-          <SettingsIcon />
-        </IconButton>
-      </Grid>
-    </Grid>
+      <Typography variant="h6">{repoName}</Typography>
+      <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+        Main Menu
+      </Typography>
+      <IconButton sx={{ color: "white" }}>
+        <SettingsIcon />
+      </IconButton>
+    </Stack>
   );
 };
 

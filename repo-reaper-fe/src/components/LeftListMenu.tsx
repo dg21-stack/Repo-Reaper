@@ -36,17 +36,19 @@ export const ButtonWithDropdown = () => {
         color="primary"
         onClick={handleBranchClick}
         endIcon={<ArrowDropDownIcon />}
-        sx={{ flexGrow: 1, justifyContent: "space-between" }}
+        sx={{
+          flexGrow: 1,
+          bgcolor: "#7289da", // Purple color
+          '&:hover': {
+            bgcolor: "#3700b3",
+          }
+        }}
       >
         Select Branch
       </Button>
 
       {/* Branch Dropdown Menu */}
-      <Menu
-        anchorEl={branchAnchorEl}
-        open={branchOpen}
-        onClose={handleBranchClose}
-      >
+      <Menu anchorEl={branchAnchorEl} open={branchOpen} onClose={handleBranchClose}>
         {branches.map((branch) => (
           <MenuItem key={branch} onClick={handleBranchClose}>
             {branch}
@@ -55,7 +57,7 @@ export const ButtonWithDropdown = () => {
       </Menu>
 
       {/* Right Side - More Options Dropdown Button */}
-      <IconButton onClick={handleClick}>
+      <IconButton onClick={handleClick} sx={{ color: "white" }}>
         <MoreVertIcon fontSize="medium" />
       </IconButton>
 

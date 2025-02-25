@@ -1,5 +1,5 @@
-import * as React from "react";
-import { CssBaseline, Box, Grid, Stack, TextField, Button } from "@mui/material";
+import React from "react";
+import { CssBaseline, Box, Stack, TextField, Button, Typography, Grid, Fade } from "@mui/material";
 import { ButtonWithDropdown } from "./LeftListMenu";
 import { LeftMenuListItem } from "./LeftMenuListItem";
 import RepoHeader from "./RepoHeader";
@@ -44,130 +44,119 @@ const fileStructure: Record<string, FileStructureItem> = {
   },
 };
 
-
 export const GridContainer = () => {
-  const [selectedId, setSelectedId] = React.useState<string | null>(null); // State to manage the selected file id
-  const [gitState, setGitState] = React.useState<"commit" | "push">("commit"); // State to manage Git state
-  const [commitMessage, setCommitMessage] = React.useState(""); // State to manage commit message
+  const [selectedId, setSelectedId] = React.useState<string | null>(null);
+  const [gitState, setGitState] = React.useState<"commit" | "push">("commit");
+  const [commitMessage, setCommitMessage] = React.useState("");
 
   const handleItemClick = (id: string) => {
-    setSelectedId(id); // Update the selected file id when an item is clicked
+    setSelectedId(id);
   };
 
   const handleCommit = () => {
     console.log("Commit message:", commitMessage);
-    setGitState("push")
-    // Add logic to handle commit
+    setGitState("push");
   };
 
   const handlePush = () => {
     console.log("Pushing changes...");
-    setGitState("commit")
-    // Add logic to handle push
+    setGitState("commit");
   };
 
-  // Get the selected file based on the selectedId
   const selectedFile = selectedId ? fileStructure[selectedId] : null;
 
   return (
-    <Box sx={{ height: "100vh", width: "100vw", overflow: "hidden" }}>
-      <CssBaseline />
-      <Grid container sx={{ height: "100vh" }} spacing={0.5}>
-        {/* Top Bar - Repo Header */}
-        <Grid item flex="1">
-          <Box sx={{ height: 60, bgcolor: "primary.main" }}>
-            <RepoHeader repoName="repo" />
-          </Box>
-        </Grid>
+    <Fade in={true}>
+    <Grid container sx={{ height: "100vh", bgcolor: "#181818" }} spacing={0.5}>
+      {/* Top Bar */}
+      <Grid item xs={12}>
+        <Box sx={{ height: 60, bgcolor: "#36393f", borderBottom: "1px solid #333" }}>
+          <ButtonRow />
+        </Box>
+      </Grid>
 
-        {/* Container for Buttons */}
-        <Grid item xs={12}>
-          <Box sx={{ height: 60, bgcolor: "primary.main" }}>
-            <ButtonRow />
-          </Box>
-        </Grid>
+      {/* Left Panel */}
+      <Grid item xs={3}>
+        <Box
+          sx={{
+            height: "calc(100vh - 120px)",
+            bgcolor: "#36393f",
+            overflow: "hidden",
+            display: "flex",
+            flexDirection: "column",
+            borderRight: "1px solid #333",
+          }}
+        >
+          <ButtonWithDropdown />
+          <Stack spacing={0} sx={{ mt: 2, flex: 1 }}>
+            {Object.values(fileStructure).map((item) => (
+              <LeftMenuListItem
+                key={item.id}
+                id={item.id}
+                name={item.name}
+                type={item.type}
+                level={item.level}
+                path={item.path}
+                isSelected={selectedId === item.id}
+                onClick={handleItemClick}
+              />
+            ))}
+          </Stack>
 
-        {/* Left Narrow Panel */}
-        <Grid item xs={3}>
-          <Box
-            sx={{
-              height: "calc(100vh - 120px)",
-              bgcolor: "secondary.main",
-              overflow: "hidden",
-              display: "flex",
-              flexDirection: "column",
-            }}
-          >
-            <ButtonWithDropdown />
-            <Stack spacing={0} sx={{ mt: 2, flex: 1 }}>
-              {Object.values(fileStructure).map((item) => (
-                <LeftMenuListItem
-                  key={item.id}
-                  id={item.id}
-                  name={item.name}
-                  type={item.type}
-                  level={item.level}
-                  path={item.path}
-                  isSelected={selectedId === item.id} // Check if the item is selected
-                  onClick={handleItemClick} // Pass the click handler
+          {/* Commit Section */}
+          <Box sx={{ p: 2, bgcolor: "#1e1e1e", borderTop: "1px solid #333", position: "absolute", bottom: 0, width: "100%" }}>
+            {gitState === "commit" ? (
+              <Stack spacing={2}>
+                <TextField
+                  fullWidth
+                  variant="outlined"
+                  placeholder="Enter commit message"
+                  value={commitMessage}
+                  onChange={(e) => setCommitMessage(e.target.value)}
+                  sx={{ bgcolor: "white" }}
                 />
-              ))}
-            </Stack>
-
-            {/* Additional Container for Git Actions */}
-            <Box
-              sx={{
-                p: 2,
-                bgcolor: "background.paper",
-                borderTop: "1px solid #e0e0e0",
-              }}
-            >
-              {gitState === "commit" ? (
-                <Stack spacing={2}>
-                  <TextField
-                    fullWidth
-                    variant="outlined"
-                    placeholder="Enter commit message"
-                    value={commitMessage}
-                    onChange={(e) => setCommitMessage(e.target.value)}
-                  />
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    fullWidth
-                    onClick={handleCommit}
-                  >
-                    Commit
-                  </Button>
-                </Stack>
-              ) : (
                 <Button
                   variant="contained"
-                  color="secondary"
+                  color="primary"
                   fullWidth
-                  onClick={handlePush}
+                  onClick={handleCommit}
+                  sx={{
+                    bgcolor: "#7289da", // Purple color
+                    '&:hover': {
+                      bgcolor: "#3700b3",
+                    }
+                  }}
                 >
-                  Push
+                  Commit
                 </Button>
-              )}
-            </Box>
+              </Stack>
+            ) : (
+              <Button
+                variant="contained"
+                color="secondary"
+                fullWidth
+                onClick={handlePush}
+                sx={{
+                  bgcolor: "#03dac6", // Teal
+                  '&:hover': {
+                    bgcolor: "#018786",
+                  }
+                }}
+              >
+                Push
+              </Button>
+            )}
           </Box>
-        </Grid>
-
-        {/* Right Wider Panel */}
-        <Grid item xs={9}>
-          <Box
-            sx={{
-              height: "calc(100vh - 120px)",
-              bgcolor: "success.main",
-              overflow: "hidden",
-            }}
-          >
-            {/* Pass the selected file to PdfContainer */}
-            <PdfContainer selectedFile={selectedFile} />
-          </Box>
-        </Grid>
+        </Box>
       </Grid>
-    </Box>
+
+      {/* Right Panel */}
+      <Grid item xs={9}>
+        <Box sx={{ height: "calc(100vh - 120px)", bgcolor: "#36393f", overflow: "hidden" }}>
+          <PdfContainer selectedFile={selectedFile} />
+        </Box>
+      </Grid>
+    </Grid>
+    </Fade>
   );
 };

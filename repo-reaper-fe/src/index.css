@@ -4,10 +4,26 @@ body {
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
+  background-color: '#36393f';
   -moz-osx-font-smoothing: grayscale;
+  user-select: none; 
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+
+.MuiButton-root:hover {
+  /* pointer-events: none; Prevents clicks */
+  opacity: 1; /* Reduces visibility */
+  background-color: transparent;
+  /* background-color: #4e5969 !important; Keeps background consistent */
+}
+.MuiButton-root::selection {
+  /* pointer-events: none; Prevents clicks */
+  opacity: 1; /* Reduces visibility */
+  background-color: transparent;
+  /* background-color: #4e5969 !important; Keeps background consistent */
 }
