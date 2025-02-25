@@ -340,18 +340,17 @@ export function BranchHistory() {
           </Box>
           ) : (
             // List View
+            <Box
+            sx={{
+              display: 'flex',
+              transition: 'transform 0.5s ease-in-out',
+              width: '100%',
+              height:'80%'
+            }}>
             <Fade in={viewMode =="list" && !isModalOpen && !deleteModal} timeout={300} onClick={(e) => e.stopPropagation()}>
             
-            <Paper
-              sx={{
-                backgroundColor: '#2f3136',
-                borderRadius: '8px',
-                overflow: 'hidden',
-                width: '99%',
-                // marginTop: '80px',
-                boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
-              }}
-            >
+            
+            
               <TableContainer component={Paper} sx={{ backgroundColor: '#3e4046', borderRadius:'10',borderColor:'white',
                 maxHeight: branches.length > 10 ? '1000px' : 'auto', // Set max height for scrolling
                 overflowY: branches.length > 3 ? 'auto' : 'visible', // Enable vertical scrollbar if more than 3 entries
@@ -395,8 +394,8 @@ export function BranchHistory() {
                   </TableBody>
                 </Table>
               </TableContainer>
-            </Paper>
             </Fade>
+            </Box>
           )}
 
           {/* SpeedDial for Actions (Disabled in List View) */}
