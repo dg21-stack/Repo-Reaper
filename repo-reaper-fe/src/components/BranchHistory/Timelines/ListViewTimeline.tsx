@@ -16,7 +16,6 @@ import TimelineConnector from "@mui/lab/TimelineConnector";
 import TimelineDot from "@mui/lab/TimelineDot";
 import Brightness1OutlinedIcon from "@mui/icons-material/Brightness1Outlined";
 import CheckIcon from "@mui/icons-material/Check";
-import { DeleteBranchModal } from "../Modals/DeleteBranchModal";
 
 interface ICustomizedTimeline {
   branchName: string;
@@ -212,7 +211,7 @@ export default function ListViewTimeline({
                       sx={{ color: "white" }}
                     />
                   </TimelineDot>
-                  {index < 3 && <TimelineConnector />}
+                  {index != timelineData.length - 1 && <TimelineConnector />}
                 </TimelineSeparator>
               </TimelineItem>
             ))}
@@ -228,7 +227,7 @@ export default function ListViewTimeline({
             >
               <Typography
                 variant="h6"
-                color={timelineData.length > 3 ? "white" : "transparent"}
+                color={timelineData.length > 4 ? "white" : "transparent"}
                 sx={{ marginLeft: "4px" }}
               >
                 ...

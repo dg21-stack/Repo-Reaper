@@ -22,9 +22,8 @@ import AddIcon from "@mui/icons-material/Add";
 import IconButton from "@mui/material/IconButton";
 import CheckIcon from "@mui/icons-material/Check";
 import { formatTimestamp } from "../../Utils/FormatTimestamp";
-import { DeleteBranchModal } from "../Modals/DeleteBranchModal";
 
-interface ICustomizedTimeline {
+interface IAnimatedTimeline {
   branchName: string;
   selectedNode: { id: string | null };
   handleNodeClick: (nodeIndex: number, event: React.MouseEvent) => void;
@@ -44,7 +43,7 @@ interface ICustomizedTimeline {
   deleteModal: boolean;
 }
 
-export default function CustomizedTimeline({
+export const AnimatedTimeline = ({
   selectedNode,
   handleNodeClick,
   handleConnectorClick,
@@ -58,7 +57,7 @@ export default function CustomizedTimeline({
   selectedName,
   openDeleteModal,
   deleteModal,
-}: ICustomizedTimeline) {
+}: IAnimatedTimeline) => {
   const [state, setState] = useState(false);
   const [editedBranchName, setEditedBranchName] = useState(branchName);
   const [contextEditState, setContextEditState] = useState(false);
@@ -364,4 +363,4 @@ export default function CustomizedTimeline({
       </Fade>
     </>
   );
-}
+};

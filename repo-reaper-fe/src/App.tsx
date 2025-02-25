@@ -1,4 +1,3 @@
-import React from "react";
 import "./App.css";
 import { GridContainer } from "./components/Home/GridContainer";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";

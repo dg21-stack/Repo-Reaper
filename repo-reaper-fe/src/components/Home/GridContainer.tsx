@@ -1,17 +1,7 @@
 import React from "react";
-import {
-  CssBaseline,
-  Box,
-  Stack,
-  TextField,
-  Button,
-  Typography,
-  Grid,
-  Fade,
-} from "@mui/material";
+import { Box, Stack, TextField, Button, Grid, Fade } from "@mui/material";
 import { ButtonWithDropdown } from "./HomeContainers/LeftListMenu";
 import { LeftMenuListItem } from "./HomeContainers/LeftMenuListItem";
-import RepoHeader from "../Wrapper/RepoHeader";
 import { ButtonRow } from "./HomeContainers/ButtonRow";
 import { PdfContainer } from "./HomeContainers/EmbeddedBinariesComponent";
 

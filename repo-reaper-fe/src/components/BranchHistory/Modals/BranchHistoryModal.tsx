@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   Box,
-  Grow,
   Paper,
   IconButton,
   Fade,
@@ -12,7 +11,7 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack"; // Import the back arrow icon
 import { formatTimestamp } from "../../Utils/FormatTimestamp";
-import CustomizedTimeline from "../Timelines/Timeline";
+import { AnimatedTimeline } from "../Timelines/AnimatedTimeline";
 
 interface IBranchHistoryModal {
   isOpen: boolean;
@@ -195,7 +194,7 @@ export const BranchHistoryModal = ({
             }}
           >
             {timelineData && (
-              <CustomizedTimeline
+              <AnimatedTimeline
                 branchName={timelineData.title}
                 selectedName={title}
                 selectedNode={selectedNode}

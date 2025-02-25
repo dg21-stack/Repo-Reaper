@@ -1,4 +1,4 @@
-import { Box, Paper, Button, Stack } from "@mui/material";
+import { Box, Button, Stack } from "@mui/material";
 import { Link } from "react-router-dom";
 
 export const ButtonRow = () => {

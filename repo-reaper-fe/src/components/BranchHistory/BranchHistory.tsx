@@ -1,4 +1,3 @@
-import * as React from "react";
 import {
   Box,
   Stack,
@@ -22,7 +21,7 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import CustomizedTimeline from "./Timelines/Timeline";
+import { AnimatedTimeline } from "./Timelines/AnimatedTimeline";
 import { BranchHistoryModal } from "./Modals/BranchHistoryModal";
 import {
   KeyboardArrowLeft,
@@ -427,7 +426,7 @@ export function BranchHistory() {
                     justifyContent: "center",
                   }}
                 >
-                  <CustomizedTimeline
+                  <AnimatedTimeline
                     branchName={branch.title}
                     selectedNode={selectedNode}
                     selectedTimeline={selectedTimeline}
