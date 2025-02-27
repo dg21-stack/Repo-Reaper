@@ -1,5 +1,5 @@
 import subprocess
-from getBranches import get_repo_branches
+from methods.getBranches import get_repo_branches
 
 def branch_exists(repo_path, branch):
     """Check if a branch exists in the repository."""
@@ -34,7 +34,7 @@ def run_git_log_specific_branch(repo_path, branch):
                 "message": message
             }
 
-    return commit_entries, last_updated_time
+    return {"branchHistory":commit_entries, "lastUpdatedTime": last_updated_time}
 
 
 def run_git_log_all_branch(repo_path):
@@ -43,11 +43,11 @@ def run_git_log_all_branch(repo_path):
     branch_entries = []
 
     for branch in branches:
-        commit_history, last_updated_time = run_git_log_specific_branch(repo_path, branch)
+        results =  run_git_log_specific_branch(repo_path, branch)
         branch_entries.append({
             "branch": branch,
-            "lastUpdatedTime": last_updated_time,
-            "commitHistory": commit_history
+            "lastUpdatedTime": results["lastUpdatedTime"],
+            "commitHistory": results["branchHistory"]
         })
 
     return {
@@ -55,5 +55,3 @@ def run_git_log_all_branch(repo_path):
         "branchHistory": branch_entries
     }
 
-
-print(run_git_log_all_branch("C:/Users/Daniel/Repo-Reaper"))

@@ -22,6 +22,3 @@ def rename_git_branch(repo_path, old_branch, new_branch):
         raise "naming process failed"
 
     return "renamed branch {old_branch} to {new_branch}"
-
-print(rename_git_branch("C:/Users/Daniel/Repo-Reaper", "repo-reaper-fe-01", "repo-reaper-fe"))
-print(get_repo_branches("C:/Users/Daniel/Repo-Reaper"))

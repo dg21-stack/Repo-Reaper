@@ -11,3 +11,5 @@ def delete_git_branch(repo_path, branch_name):
     except subprocess.CalledProcessError as e:
         print(f"Error deleting branch: {e}")
         raise
+
+    return f'branch {branch_name} deleted'
