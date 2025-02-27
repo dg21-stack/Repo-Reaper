@@ -2,7 +2,7 @@ import unittest
 import sys
 import os
 import requests
-from tests.constants import path
+from constants import path
 
 class TestGitAPI(unittest.TestCase):
     def setUp(self):
@@ -73,6 +73,14 @@ class TestGitAPI(unittest.TestCase):
             json={"repo_path": "/invalid/path"}
         )
         self.assertEqual(response.status_code, 500)
+    
+    def test_add_commit_push(self):
+        """Test the /add-commit-push endpoint"""
+        response = requests.post(
+            f"{self.base_url}/add-commit-push",
+            json={"repo_path": self.repo_path, "branch": "main", "message": "test message"}
+        )
+        self.assertEqual(response.status_code, 200)
 
 if __name__ == '__main__':
     unittest.main() 
