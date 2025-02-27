@@ -6,3 +6,5 @@ def get_reflog(repo_path, branch):
     reflog_entries = [entry for entry in result.stdout.split('\n') if entry]
     return reflog_entries
 
+
+get_reflog("C:/Users/Daniel/Repo-Reaper", "main")
