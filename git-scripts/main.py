@@ -5,7 +5,7 @@ import os
 from methods.createBranch import create_git_branch
 from methods.deleteBranch import delete_git_branch
 from methods.gitlog import run_git_log_all_branch, run_git_log_specific_branch  
-from methods.getBranches import get_repo_branches
+from methods.getBranches import get_repo_branches, get_repo_branch
 from methods.gitReflog import get_reflog
 
 app = Flask(__name__)
@@ -66,9 +66,9 @@ def create_branch():
     repo_path = data['repo_path']
     branch = data['branch']
     try: 
-        return create_git_branch(repo_path, branch)
+        return jsonify({"result":create_git_branch(repo_path, branch)})
     except:
-        return jsonify({"error": "Missing repo_path in request body"}), 500
+        return jsonify({"error": str(e)}), 500
     
 @app.route('/delete-branch', methods=['POST'])
 def delete_branch(): 
@@ -79,11 +79,21 @@ def delete_branch():
     repo_path = data['repo_path']
     branch = data['branch']
     try: 
-        return delete_git_branch(repo_path, branch)
+        return jsonify({"result":delete_git_branch(repo_path, branch)})
     except Exception as e:
-        print(e)
-        return jsonify({"error": "Missing repo_path in request body"}), 500
-        
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/get-current-branch', methods=['POST'])
+def get_current_branch():
+    data = request.get_json()
+    if not data or 'repo_path' not in data:
+        return jsonify({"error": "Missing repo_path in request body"}), 400
+
+    try:
+        return jsonify({"branch":get_repo_branch(data['repo_path'])})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 if __name__ == '__main__':
     app.run(debug=True)
 
