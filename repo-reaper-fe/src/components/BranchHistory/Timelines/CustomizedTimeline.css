@@ -1,0 +1,49 @@
+/* Default timeline state */
+.timeline-container {
+    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+  }
+  
+  /* Hide other timelines when one is zoomed */
+  .timeline-hide {
+    transform: scale(0);
+    opacity: 0;
+    visibility: hidden;
+  }
+  
+  /* Zoom in the entire timeline when clicking a connector */
+  .timeline-zoom-in {
+    transform: scale(2);
+    transition: transform 0.3s ease-in-out;
+  }
+  
+  /* Normal state for timelines */
+  .timeline-normal {
+    transform: scale(1);
+    opacity: 1;
+    visibility: visible;
+    transition: transform 0.3s ease-in-out;
+
+  }
+  
+  /* Individual nodes */
+  .selected {
+    transform: scale(2);
+    transition: transform 0.3s ease-in-out;
+  }
+  
+  .zoom-out {
+    transform: scale(0.9); /* Adjusted to make the zoom-out effect smoother */
+    opacity: 0.8; /* Don't make other nodes disappear */
+    transition: transform 0.3s ease-in-out;
+  }
+  
+  /* Make connectors clickable */
+  .connector {
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+  }
+  
+  .connector:hover {
+    background-color: #888;
+  }
+  

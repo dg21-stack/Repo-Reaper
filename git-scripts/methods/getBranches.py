@@ -10,3 +10,8 @@ def get_repo_branches(repo_path):
         elif not branch.startswith("remotes/"):
             results.append(branch)
     return results[:-1]
+
+
+def get_repo_branch(repo_path):
+    result = subprocess.run(["git", "rev-parse", "--abbrev-ref", "HEAD"], capture_output=True, text=True, cwd=repo_path)
+    return str(result.stdout)
