@@ -44,7 +44,8 @@ def create_branch(branch):
         return jsonify({"error": "No repo_path provided and no active repository selected"}), 400
 
     try: 
-        return jsonify({"result": create_git_branch(repo_path, branch)})
+        result = repo_manager.get_repo_session(repo_path).create_git_branch(branch)
+        return jsonify({"repo-path": repo_path, "branch": branch, "result": result})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
@@ -62,7 +63,8 @@ def delete_branch(branch):
         return jsonify({"error": "No repo_path provided and no active repository selected"}), 400
 
     try: 
-        return jsonify({"result": delete_git_branch(repo_path, branch)})
+        result = repo_manager.get_repo_session(repo_path).delete_git_branch(branch)
+        return jsonify({"repo-path": repo_path, "branch": branch, "result": result})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
@@ -105,7 +107,7 @@ def get_current_branch():
         return jsonify({"error": "No repo_path provided and no active repository selected"}), 400
 
     try:
-        return jsonify({"branch": get_repo_branch(repo_path)})
+        return jsonify({"branch": repo_manager.get_repo_session(repo_path)._get_current_branch()})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 

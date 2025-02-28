@@ -35,6 +35,12 @@ class GitRepoSession:
             raise Exception("Failed to get branches")
         return [branch.strip().replace('* ', '') for branch in result.split('\n') if branch.strip()]
 
+    def get_branches_all(self):
+        result = self._run_git_command(["git", "branch", "-a"])
+        if not result:
+            raise Exception("Failed to get all branches")
+        return [branch.strip().replace('* ', '') for branch in result.split('\n') if branch.strip()]
+
     def switch_branch(self, branch_name):
         """Switch to specified branch"""
         # Validate the branch exists
@@ -56,3 +62,23 @@ class GitRepoSession:
         reflog_entries = [entry for entry in result.split('\n') if entry]
         return reflog_entries
     
+    def create_git_branch(self, branch_name):
+        result = self._run_git_command(["git", "branch", branch_name])
+        if not result:
+            return {"status": "success", "branch": branch_name, "output": result}
+        else:
+            raise Exception(f"Failed to create branch: {result}")
+    
+    def delete_git_branch(self, branch_name):
+        try:
+            result = [self._run_git_command(["git", "branch", "-d", branch_name])]
+            if f"remotes/origin/{branch_name}" in self.get_branches_all():
+                try:
+                    self._run_git_command(["git", "push", "origin", "--delete", branch_name])
+                    result.append(f"Deleted remote branch: {branch_name}")
+                except Exception as e:
+                    raise Exception(f"Failed to delete remote branch: {str(e)}")
+            # If we get here, the command was successful
+            return {"status": "success", "branch": branch_name, "output": result}
+        except Exception as e:
+            raise Exception(f"Failed to delete branch: {str(e)}")
