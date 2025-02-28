@@ -33,7 +33,7 @@ class GitRepoSession:
         result = self._run_git_command(["git", "branch"])
         if not result:
             raise Exception("Failed to get branches")
-        return [branch.strip() for branch in result.split('\n') if branch.strip()]
+        return [branch.strip().replace('* ', '') for branch in result.split('\n') if branch.strip()]
 
     def switch_branch(self, branch_name):
         """Switch to specified branch"""

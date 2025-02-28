@@ -1,0 +1,9 @@
+get all branches (/branches)
+create branch (/branches/<branch> POST)
+Delete branch (/branches/<branch> DELETE)
+Switch Branch (/branches/<branch>/switch POST)
+Get Current Branch (/branches/current GET)
+Git Log for all branches (/branches/log GET)
+Git Log for Specific Branch (/branches/<branch>/log GET)
+Git Reflog for Specific Branch (/branches/<branch>/reflog GET)
+Git add commit push (/branches/current/add-commit-push POST)3
