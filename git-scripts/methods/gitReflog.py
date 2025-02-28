@@ -1,7 +1,22 @@
 import subprocess
 
 def get_reflog(repo_path, branch):
-    result = subprocess.run(["git", "reflog", branch], capture_output=True, text=True, cwd=repo_path)
+    query = ["git", "reflog"]
+    if branch != "main":
+        query.append(branch)
     
-    reflog_entries = [entry for entry in result.stdout.split('\n') if entry]
-    return reflog_entries
+    result = subprocess.run(query, capture_output=True, text=True, cwd=repo_path)
+    
+    reflog_dict = {}
+    for entry in result.stdout.split('\n'):
+        if entry:
+            parts = entry.split(" ", 2) 
+            if len(parts) >= 3:
+                commit_hash = parts[0]  
+                reflog_message = parts[2]
+                if commit_hash in reflog_dict: 
+                    reflog_dict[commit_hash].append(reflog_message)
+                else:
+                    reflog_dict[commit_hash] = [reflog_message]
+    
+    return reflog_dict

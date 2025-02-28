@@ -22,17 +22,18 @@ def run_git_log_specific_branch(repo_path, branch):
         text=True
     )
 
-    commit_entries = {}
+    commit_entries = []
     last_updated_time = 0
 
     for line in result.stdout.strip().split("\n"):
         if line:
             commit_id, timestamp, message = line.split("|", 2)
             last_updated_time = max(int(timestamp), last_updated_time)
-            commit_entries[commit_id] = {
+            commit_entries.append({
                 "time": int(timestamp),
-                "message": message
-            }
+                "message": message,
+                "id": commit_id
+            })
 
     return {"branchHistory":commit_entries, "lastUpdatedTime": last_updated_time}
 

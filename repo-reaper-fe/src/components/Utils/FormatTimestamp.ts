@@ -12,5 +12,5 @@ export function formatTimestamp(timestamp: string) {
   };
 
   // Format the date and time
-  return new Intl.DateTimeFormat("en-US", options).format(date);
+  return date.toUTCString();
 }

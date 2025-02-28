@@ -22,6 +22,7 @@ import AddIcon from "@mui/icons-material/Add";
 import IconButton from "@mui/material/IconButton";
 import CheckIcon from "@mui/icons-material/Check";
 import { formatTimestamp } from "../../Utils/FormatTimestamp";
+import { formatCommit } from "../../Utils/FormatCommit";
 
 interface IAnimatedTimeline {
   branchName: string;
@@ -59,9 +60,10 @@ export const AnimatedTimeline = ({
   deleteModal,
 }: IAnimatedTimeline) => {
   const [state, setState] = useState(false);
-  const [editedBranchName, setEditedBranchName] = useState(branchName);
+  const [editedBranchName, setEditedBranchName] = useState(
+    formatCommit(branchName)
+  );
   const [contextEditState, setContextEditState] = useState(false);
-
   // Context menu state
   const [contextMenu, setContextMenu] = useState<{
     mouseX: number;
@@ -281,60 +283,82 @@ export const AnimatedTimeline = ({
           </Box>
 
           {/* Timeline */}
-          <Timeline
+          <Box
             sx={{
-              backgroundColor: "#36393f",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              position: "relative",
-              width: "425px", // Fixed width to match the container
-              margin: "0 auto", // Center the timeline
+              overflow: "auto",
+              maxHeight: "400px", // Adjust height as needed
+              // width: "350px",
+              "&::-webkit-scrollbar": {
+                width: "8px",
+              },
+              "&::-webkit-scrollbar-track": {
+                backgroundColor: "#2f3136",
+                borderRadius: "4px",
+              },
+              "&::-webkit-scrollbar-thumb": {
+                backgroundColor: "#7289da",
+                borderRadius: "4px",
+                "&:hover": {
+                  backgroundColor: "#5b6eae",
+                },
+              },
             }}
           >
-            {(isModalTimeline ? timelineData : timelineData.slice(0, 3)).map(
-              (item, index) => (
-                <TimelineItem key={item.id}>
-                  <TimelineOppositeContent
-                    sx={{ m: "auto 0", color: "#b9bbbe" }}
-                    align="right"
-                    variant="body2"
-                    color="text.secondary"
-                  >
-                    <Typography variant="body2" color="#b9bbbe">
-                      {formatTimestamp(item.time)}
-                    </Typography>
-                  </TimelineOppositeContent>
-                  <TimelineSeparator>
-                    <IconButton onClick={(e) => handleNodeClick(index, e)}>
-                      <TimelineDot
+            <Timeline
+              sx={{
+                backgroundColor: "#36393f",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                position: "relative",
+                width: "425px", // Fixed width to match the container
+                margin: "0 auto", // Center the timeline
+              }}
+            >
+              {(isModalTimeline ? timelineData : timelineData.slice(0, 3)).map(
+                (item, index) => (
+                  <TimelineItem key={item.id}>
+                    <TimelineOppositeContent
+                      sx={{ m: "auto 0", color: "#b9bbbe" }}
+                      align="right"
+                      variant="body2"
+                      color="text.secondary"
+                    >
+                      <Typography variant="body2" color="#b9bbbe">
+                        {formatTimestamp(item.time)}
+                      </Typography>
+                    </TimelineOppositeContent>
+                    <TimelineSeparator>
+                      <IconButton onClick={(e) => handleNodeClick(index, e)}>
+                        <TimelineDot
+                          sx={{
+                            backgroundColor:
+                              selectedName == item.id ? "#3700b3" : "#7289da",
+                            "&:hover": { bgcolor: "#3700b3" },
+                          }}
+                        >
+                          <Brightness1OutlinedIcon />
+                        </TimelineDot>
+                      </IconButton>
+                      <TimelineConnector
+                        className="connector"
+                        onClick={handleConnectorClick}
                         sx={{
-                          backgroundColor:
-                            selectedName == item.id ? "#3700b3" : "#7289da",
-                          "&:hover": { bgcolor: "#3700b3" },
+                          height: "10px", // Adjust the height of the connector
                         }}
-                      >
-                        <Brightness1OutlinedIcon />
-                      </TimelineDot>
-                    </IconButton>
-                    <TimelineConnector
-                      className="connector"
-                      onClick={handleConnectorClick}
-                      sx={{
-                        height: "10px", // Adjust the height of the connector
-                      }}
-                    />
-                  </TimelineSeparator>
+                      />
+                    </TimelineSeparator>
 
-                  <TimelineContent sx={{ py: "12px", px: 2, color: "white" }}>
-                    <Typography variant="h6" component="span">
-                      {item.id}
-                    </Typography>
-                  </TimelineContent>
-                </TimelineItem>
-              )
-            )}
-          </Timeline>
+                    <TimelineContent sx={{ py: "12px", px: 2, color: "white" }}>
+                      <Typography variant="h6" component="span">
+                        # {formatCommit(item.id)}
+                      </Typography>
+                    </TimelineContent>
+                  </TimelineItem>
+                )
+              )}
+            </Timeline>
+          </Box>
 
           {/* Ellipsis Button */}
           <Box

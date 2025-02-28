@@ -10,8 +10,10 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack"; // Import the back arrow icon
-import { formatTimestamp } from "../../Utils/FormatTimestamp";
 import { AnimatedTimeline } from "../Timelines/AnimatedTimeline";
+import { formatCommit } from "../../Utils/FormatCommit";
+import RadioButtonCheckedIcon from "@mui/icons-material/RadioButtonChecked";
+import CircleIcon from "@mui/icons-material/Circle";
 
 interface IBranchHistoryModal {
   isOpen: boolean;
@@ -20,10 +22,11 @@ interface IBranchHistoryModal {
   onClose: () => void;
   timelineData:
     | {
-        title: string;
+        branch: string;
         commitHistory: {
           id: string;
           time: string;
+          message: string;
           commandHistory: {
             time: string;
             command: string;
@@ -33,6 +36,7 @@ interface IBranchHistoryModal {
     | undefined;
   openDeleteModal: () => void;
   deleteModal: boolean;
+  commandHistory: any;
 }
 
 export const BranchHistoryModal = ({
@@ -43,28 +47,40 @@ export const BranchHistoryModal = ({
   timelineData,
   openDeleteModal,
   deleteModal,
+  commandHistory,
 }: IBranchHistoryModal) => {
   // State to store the grouped command history
   const [groupedHistory, setGroupedHistory] = useState<{
     [key: string]: {
       id: string;
       time: string;
-      commands: { time: string; command: string }[];
+      commands: { command: string }[];
     };
   }>({});
   const [title, setTitle] = useState<string>("");
   const [expandedCommitId, setExpandedCommitId] = useState<string | null>(null); // Track expanded commit
 
   // Default: Group commands by commit ID
+
   useEffect(() => {
     if (isOpen && timelineData) {
       const grouped = timelineData.commitHistory.reduce(
         (acc, commit) => {
+          let commands = [commit.message];
+          const commitId = commit.id.slice(0, 7);
+          if (commitId in commandHistory) {
+            commands = commandHistory[commitId];
+          }
+
+          let commandsub = commands.map((comm) => {
+            return { time: "", command: comm };
+          });
           acc[commit.id] = {
             id: commit.id,
             time: commit.time,
-            commands: commit.commandHistory,
+            commands: commandsub,
           };
+
           return acc;
         },
         {} as {
@@ -75,26 +91,36 @@ export const BranchHistoryModal = ({
           };
         }
       );
-
       setGroupedHistory(grouped);
-      setTitle(timelineData.title);
+      setTitle(timelineData.branch);
       setExpandedCommitId(null); // Reset expanded commit when modal opens
     }
   }, [isOpen]);
-
+  console.log(groupedHistory);
   // Handler for node clicks (from timeline or commit list)
   const nodeClickHandler = (nodeId: string) => {
     if (timelineData) {
+      console.log(nodeId, timelineData.commitHistory);
       const selectedNodeData = timelineData.commitHistory.find(
         (node) => node.id === nodeId
       );
 
       if (selectedNodeData) {
+        console.log(selectedNodeData);
+        let commands = [selectedNodeData.message];
+        const commitId = selectedNodeData.id.slice(0, 7);
+        if (commitId in commandHistory) {
+          commands = commandHistory[commitId];
+        }
+
+        let commandsub = commands.map((comm) => {
+          return { time: "", command: comm };
+        });
         setGroupedHistory({
           [selectedNodeData.id]: {
             id: selectedNodeData.id,
             time: selectedNodeData.time,
-            commands: selectedNodeData.commandHistory,
+            commands: commandsub,
           },
         });
         setTitle(selectedNodeData.id);
@@ -111,10 +137,19 @@ export const BranchHistoryModal = ({
     if (timelineData) {
       const grouped = timelineData.commitHistory.reduce(
         (acc, commit) => {
+          let commands = [commit.message];
+          const commitId = commit.id.slice(0, 7);
+          if (commitId in commandHistory) {
+            commands = commandHistory[commitId];
+          }
+
+          let commandsub = commands.map((comm) => {
+            return { time: "", command: comm };
+          });
           acc[commit.id] = {
             id: commit.id,
             time: commit.time,
-            commands: commit.commandHistory,
+            commands: commandsub,
           };
           return acc;
         },
@@ -128,7 +163,7 @@ export const BranchHistoryModal = ({
       );
 
       setGroupedHistory(grouped);
-      setTitle(timelineData.title);
+      setTitle(timelineData.branch);
       setExpandedCommitId(null); // Reset expanded commit
     }
   };
@@ -195,7 +230,7 @@ export const BranchHistoryModal = ({
           >
             {timelineData && (
               <AnimatedTimeline
-                branchName={timelineData.title}
+                branchName={timelineData.branch}
                 selectedName={title}
                 selectedNode={selectedNode}
                 selectedTimeline={selectedTimeline}
@@ -243,7 +278,7 @@ export const BranchHistoryModal = ({
             }}
           >
             {/* Back Button */}
-            {title != timelineData?.title && (
+            {title != timelineData?.branch && (
               <IconButton
                 onClick={connectorClickHandler}
                 sx={{
@@ -266,7 +301,9 @@ export const BranchHistoryModal = ({
                 color="white"
                 sx={{ fontWeight: "bold" }}
               >
-                {title}
+                {title != timelineData?.branch
+                  ? "#" + formatCommit(title)
+                  : title}
               </Typography>
             </Box>
 
@@ -295,17 +332,15 @@ export const BranchHistoryModal = ({
                     },
                   }}
                 >
-                  {/* Commit Title */}
-                  {title == timelineData?.title && (
+                  {title == timelineData?.branch && (
                     <Typography
                       variant="h6"
                       color="white"
                       sx={{ fontWeight: "bold", mb: 1 }}
                     >
-                      {commit.id}
+                      #{formatCommit(commit.id)}
                     </Typography>
                   )}
-                  {/* Commit Data */}
                   <Box
                     sx={{
                       pl: 3, // Indent the commit data
@@ -320,23 +355,19 @@ export const BranchHistoryModal = ({
                         key={index}
                         sx={{ display: "flex", alignItems: "center", mb: 1 }}
                       >
-                        {/* Bullet point */}
-                        <Box
+                        <CircleIcon
                           sx={{
-                            width: "8px",
-                            height: "8px",
-                            borderRadius: "50%",
-                            backgroundColor: "#7289da",
-                            mr: 2,
+                            color: "#7289da",
+                            mr: 1.5,
+                            height: "10px",
+                            width: "10px",
                           }}
                         />
                         <Typography variant="body1" color="white">
-                          <strong>{formatTimestamp(command.time)}:</strong>{" "}
                           {command.command}
                         </Typography>
                       </Box>
                     ))}
-                    {/* Show "..." if there are more than 4 commands and the commit is not expanded */}
                     {commit.commands.length > 4 &&
                       expandedCommitId !== commit.id && (
                         <Typography variant="body1" color="white">

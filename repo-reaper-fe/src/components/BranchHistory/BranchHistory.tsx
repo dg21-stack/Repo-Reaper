@@ -34,7 +34,7 @@ import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import ListViewTimeline from "./Timelines/ListViewTimeline";
 import { DeleteBranchModal } from "./Modals/DeleteBranchModal";
-import { getAllLogs } from "../../service/CommitHistoryService";
+import { getAllLogs, getReflog } from "../../service/CommitHistoryService";
 
 export function BranchHistory() {
   const navigate = useNavigate();
@@ -51,6 +51,7 @@ export function BranchHistory() {
   const [deleteState, setDeleteState] = useState<boolean>(false);
   const [editState, setEditState] = useState<boolean>(false);
   const [addState, setAddState] = useState<boolean>(false);
+  const [commandHistory, setCommandHistory] = useState([]);
 
   const [sortCriteria, setSortCriteria] = useState<
     "branchName" | "latestUpdatedTime" | "commitCount" | null
@@ -69,14 +70,22 @@ export function BranchHistory() {
     const fetchLogs = async () => {
       try {
         const result = await getAllLogs();
-        console.log(result); // ✅ Print logs
+        setBranches(result.result.branchHistory);
+        console.log(result.result.branchHistory);
       } catch (err) {
         console.error("Error fetching logs:", err);
       }
     };
 
     fetchLogs();
+    fetchRefLogs(0);
   }, []);
+  const fetchRefLogs = async (branchIndex: number) => {
+    try {
+      const result = await getReflog(branches[branchIndex].branch);
+      setCommandHistory(result.reflog);
+    } catch (err) {}
+  };
   const openDeleteModal = () => {
     setDeleteModal(true);
   };
@@ -104,6 +113,7 @@ export function BranchHistory() {
       id: branches[branchIndex].commitHistory[commitIndex].id,
     });
     setIsModalOpen(true);
+    fetchRefLogs(branchIndex);
   };
 
   const handleConnectorClick = (
@@ -163,8 +173,8 @@ export function BranchHistory() {
       sortedBranches.sort((a, b) => {
         if (criteria === "branchName") {
           return direction === "asc"
-            ? a.title.localeCompare(b.title) // Ascending order
-            : b.title.localeCompare(a.title); // Descending order
+            ? a.branch.localeCompare(b.branch) // Ascending order
+            : b.branch.localeCompare(a.branch); // Descending order
         } else if (criteria === "latestUpdatedTime") {
           const aTime = new Date(a.latestUpdatedTime).getTime();
           const bTime = new Date(b.latestUpdatedTime).getTime();
@@ -439,7 +449,7 @@ export function BranchHistory() {
                   }}
                 >
                   <AnimatedTimeline
-                    branchName={branch.title}
+                    branchName={branch.branch}
                     selectedNode={selectedNode}
                     selectedTimeline={selectedTimeline}
                     handleNodeClick={(
@@ -566,10 +576,10 @@ export function BranchHistory() {
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {branches.map((branch, branchIndex) => (
+                      {branches.map((branch: any, branchIndex) => (
                         <ListViewTimeline
                           key={branch.id}
-                          branchName={branch.title}
+                          branchName={branch.branch}
                           latestUpdatedTime={branch.latestUpdatedTime}
                           commitCount={branch.commitHistory.length}
                           timelineData={branch.commitHistory}
@@ -683,6 +693,7 @@ export function BranchHistory() {
           )} // Pass commit history
           openDeleteModal={openDeleteModal}
           deleteModal={deleteModal}
+          commandHistory={commandHistory}
         />
         <DeleteBranchModal
           isOpen={deleteModal}
