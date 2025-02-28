@@ -4,89 +4,73 @@ import { getConfig } from "../config/url-config";
 const { APIUrl } = getConfig();
 
 // Get all branches
-export const getAllBranches = async (repoPath: string): Promise<any> => {
+export const getAllBranches = async (): Promise<any> => {
   const URL = `${APIUrl}/branches`;
 
-  const result = await axios.get(URL, {
-    params: { repo_path: repoPath },
-  });
+  const result = await axios.get(URL);
 
   return result.data;
 };
 
 // Create a new branch
-export const createBranch = async (repoPath: string, branch: string): Promise<any> => {
+export const createBranch = async (branch: string): Promise<any> => {
   const URL = `${APIUrl}/branches/${branch}`;
 
-  const result = await axios.post(URL, {
-    repo_path: repoPath,
-  });
+  const result = await axios.post(URL);
 
   return result.data;
 };
 
 // Delete a branch
-export const deleteBranch = async (repoPath: string, branch: string): Promise<any> => {
+export const deleteBranch = async (branch: string): Promise<any> => {
   const URL = `${APIUrl}/branches/${branch}`;
 
-  const result = await axios.delete(URL, {
-    data: { repo_path: repoPath },
-  });
+  const result = await axios.delete(URL);
 
   return result.data;
 };
 
 // Switch to a branch
-export const switchBranch = async (repoPath: string | null, branch: string): Promise<any> => {
+export const switchBranch = async (branch: string): Promise<any> => {
   const URL = `${APIUrl}/branches/${branch}/switch`;
 
-  const result = await axios.post(URL, {
-    repo_path: repoPath,
-  });
+  const result = await axios.post(URL);
 
   return result.data;
 };
 
 // Get the current branch
-export const getCurrentBranch = async (repoPath: string): Promise<any> => {
+export const getCurrentBranch = async (): Promise<any> => {
   const URL = `${APIUrl}/branches/current`;
 
-  const result = await axios.get(URL, {
-    params: { repo_path: repoPath },
-  });
+  const result = await axios.get(URL);
 
   return result.data;
 };
 
 // Get logs for all branches
-export const getAllLogs = async (repoPath: string): Promise<any> => {
+export const getAllLogs = async (): Promise<any> => {
   const URL = `${APIUrl}/branches/log`;
 
-  const result = await axios.get(URL, {
-    params: { repo_path: repoPath },
-  });
+  const result = await axios.get(URL);
 
   return result.data;
 };
 
 // Get logs for a specific branch
-export const getLogsForBranch = async (repoPath: string, branch: string): Promise<any> => {
+export const getLogsForBranch = async (branch: string): Promise<any> => {
   const URL = `${APIUrl}/branches/${branch}/log`;
 
-  const result = await axios.get(URL, {
-    params: { repo_path: repoPath },
-  });
+  const result = await axios.get(URL);
 
   return result.data;
 };
 
 // Get reflog for a branch
-export const getReflog = async (repoPath: string, branch: string): Promise<any> => {
+export const getReflog = async (branch: string): Promise<any> => {
   const URL = `${APIUrl}/branches/${branch}/reflog`;
 
-  const result = await axios.get(URL, {
-    params: { repo_path: repoPath },
-  });
+  const result = await axios.get(URL);
 
   return result.data;
 };
