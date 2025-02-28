@@ -19,7 +19,7 @@ import {
   ButtonGroup,
   Paper,
 } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AnimatedTimeline } from "./Timelines/AnimatedTimeline";
 import { BranchHistoryModal } from "./Modals/BranchHistoryModal";
@@ -34,6 +34,7 @@ import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import ListViewTimeline from "./Timelines/ListViewTimeline";
 import { DeleteBranchModal } from "./Modals/DeleteBranchModal";
+import { getAllLogs } from "../../service/CommitHistoryService";
 
 export function BranchHistory() {
   const navigate = useNavigate();
@@ -64,7 +65,18 @@ export function BranchHistory() {
   const visibleCount = 3; // Number of branches visible at once
   const [activeStep, setActiveStep] = useState(0);
   const maxSteps = Math.ceil(branches.length / visibleCount);
+  useEffect(() => {
+    const fetchLogs = async () => {
+      try {
+        const result = await getAllLogs();
+        console.log(result); // ✅ Print logs
+      } catch (err) {
+        console.error("Error fetching logs:", err);
+      }
+    };
 
+    fetchLogs();
+  }, []);
   const openDeleteModal = () => {
     setDeleteModal(true);
   };

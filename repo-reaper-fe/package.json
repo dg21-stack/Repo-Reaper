@@ -20,6 +20,7 @@
     "@types/react": "^19.0.9",
     "@types/react-dom": "^19.0.3",
     "@xyflow/react": "^12.4.3",
+    "axios": "^1.8.1",
     "elkjs": "^0.9.3",
     "graphology": "^0.25.4",
     "graphology-types": "^0.24.8",
