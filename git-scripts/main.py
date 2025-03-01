@@ -33,9 +33,7 @@ def get_branches():
 @app.route('/branches/<branch>', methods=['POST'])
 def create_branch(branch): 
     data = request.get_json()
-    if not data:
-        return jsonify({"error": "Missing request body"}), 400
-    
+
     repo_path = data.get("repo_path")
     if not repo_path:
         repo_path = repo_manager.get_active_repo_path()
@@ -52,9 +50,6 @@ def create_branch(branch):
 @app.route('/branches/<branch>', methods=['DELETE'])
 def delete_branch(branch): 
     data = request.get_json()
-    if not data:
-        return jsonify({"error": "Missing request body"}), 400
-    
     repo_path = data.get("repo_path")
     if not repo_path:
         repo_path = repo_manager.get_active_repo_path()
