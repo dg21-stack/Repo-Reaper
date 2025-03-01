@@ -47,3 +47,7 @@ class BranchMethods:
             return {"status": "success", "branch": branch_name, "output": result}
         except Exception as e:
             raise Exception(f"Failed to delete branch: {str(e)}")
+    
+    def branch_exists(self, branch_name) -> bool:
+        branches = self.get_branches()
+        return branch_name in branches

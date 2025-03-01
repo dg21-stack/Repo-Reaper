@@ -94,6 +94,86 @@ class TestGitAPI(unittest.TestCase):
         self.assertIn("branch", data)
         self.assertIsInstance(data["branch"], str)
 
+    def test_git_log_all_branches(self):
+        """Test the GET /branches/log endpoint"""
+        response = requests.get(
+            f"{self.base_url}/branches/log",
+            params={"repo_path": self.repo_path}
+        )
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertIn("result", data)
+        
+        # Verify the structure of the result
+        result = data["result"]
+        self.assertIn("branchHistory", result)
+        self.assertIn("repo_name", result)
+        
+        # Verify branch history is a list
+        branch_history = result["branchHistory"]
+        self.assertIsInstance(branch_history, list)
+        
+        # If we have branches, verify their structure
+        if branch_history:
+            branch = branch_history[0]
+            self.assertIn("branch", branch)
+            self.assertIn("commitHistory", branch)
+            self.assertIn("lastUpdatedTime", branch)
+            
+            # If we have commits, verify their structure
+            if branch["commitHistory"]:
+                commit = branch["commitHistory"][0]
+                self.assertIn("id", commit)
+                self.assertIn("message", commit)
+                self.assertIn("time", commit)
+    
+    def test_git_log_specific_branch(self):
+        """Test the GET /branches/<branch>/log endpoint"""
+        # Get available branches first to ensure we have a valid branch
+        branches_response = requests.get(
+            f"{self.base_url}/branches",
+            params={"repo_path": self.repo_path}
+        )
+        branches = branches_response.json()["branches"]
+        # Make sure we have at least one branch to test with
+        self.assertTrue(len(branches) > 0, "Repository needs at least one branch for testing")
+        # Test with the first branch
+        test_branch = branches[0]
+        response = requests.get(
+            f"{self.base_url}/branches/{test_branch}/log",
+            params={"repo_path": self.repo_path}
+        )
+        # Verify response code and basic structure
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        # Verify all required fields are present
+        self.assertIn("branch", data)
+        self.assertIn("git-log", data)
+        self.assertIn("repo-path", data)
+        # Verify the branch name matches
+        self.assertEqual(data["branch"], test_branch)
+        # Verify repo path
+        self.assertEqual(data["repo-path"], self.repo_path)
+        # Verify git-log structure
+        git_log = data["git-log"]
+        self.assertIn("branchHistory", git_log)
+        self.assertIn("lastUpdatedTime", git_log)
+        # Verify lastUpdatedTime is a number
+        self.assertIsInstance(git_log["lastUpdatedTime"], int)
+        # Verify branchHistory is a list
+        branch_history = git_log["branchHistory"]
+        self.assertIsInstance(branch_history, list)
+        # If we have commits, verify their structure
+        if branch_history:
+            commit = branch_history[0] # Check first commit
+            self.assertIn("id", commit)
+            self.assertIn("message", commit)
+            self.assertIn("time", commit)
+            # Verify types of commit fields
+            self.assertIsInstance(commit["id"], str)
+            self.assertIsInstance(commit["message"], str)
+            self.assertIsInstance(commit["time"], int)
+
 
 if __name__ == '__main__':
     unittest.main()

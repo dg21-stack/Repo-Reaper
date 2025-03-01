@@ -115,7 +115,7 @@ def git_log_all_branches():
     if not repo_path:
         return jsonify({"error": "No repo_path provided and no active repository selected"}), 400
 
-    result = run_git_log_all_branch(repo_path)
+    result = repo_manager.get_repo_session(repo_path).git_log_all()
     return jsonify({"result": result})
 
 @app.route('/branches/<branch>/log', methods=['GET'])
@@ -128,7 +128,7 @@ def git_log_specific_branch(branch):
         return jsonify({"error": "No repo_path provided and no active repository selected"}), 400
     
     try:
-        result = run_git_log_specific_branch(repo_path, branch)
+        result = repo_manager.get_repo_session(repo_path).git_log_specific_branch(branch)
         return jsonify({"repo-path": repo_path, "branch": branch, "git-log": result})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -142,7 +142,7 @@ def git_reflog(branch):
     if not repo_path:
         return jsonify({"error": "No repo_path provided and no active repository selected"}), 400
 
-    result = get_reflog(repo_path, branch)
+    result = repo_manager.get_repo_session(repo_path).get_reflog_specific_branch(branch)
     return jsonify({"repo-path": repo_path, "branch": branch, "reflog": result})
 
 @app.route('/branches/current/add-commit-push', methods=['POST'])
