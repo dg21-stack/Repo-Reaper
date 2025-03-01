@@ -30,11 +30,26 @@ class BranchMethods:
     def create_git_branch(self, branch_name):
         result = self._run_git_command(["git", "branch", branch_name])
         if not result:
-            return {"status": "success", "branch": branch_name, "output": result}
+            result = {"status": "success", "branch": branch_name, "output": result}
         else:
             raise Exception(f"Failed to create branch: {result}")
+        
+        # Switch to the new branch
+        switch_result = self.switch_branch(branch_name)
+        
+        # Set upstream and push the new branch
+        try:
+            push_result = self._run_git_command(["git", "push", "--set-upstream", "origin", branch_name])
+            result["push"] = push_result
+        except Exception as e:
+            result["push_error"] = str(e)
+        print(self.current_branch)
+        return result
+        
     
     def delete_git_branch(self, branch_name):
+        if self.current_branch == branch_name:
+            self.switch_branch("main") #TODO: Either keep track of main branch name in case its not main, or keep cache of previously visited branches
         try:
             result = [self._run_git_command(["git", "branch", "-d", branch_name])]
             if f"remotes/origin/{branch_name}" in self.get_branches_all():

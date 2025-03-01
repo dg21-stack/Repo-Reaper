@@ -158,18 +158,11 @@ def git_add_commit_push():
     if not repo_path:
         return jsonify({"error": "No repo_path provided and no active repository selected"}), 400
     
-    branch = data.get("branch")
-    if not branch:
-        branch = repo_manager.get_active_branch()
-    
-    if not branch:
-        return jsonify({"error": "No branch provided and no active branch selected"}), 400
-    
     message = data['message']
     
     try:
-        result = add_commit_push(repo_path, message)
-        return jsonify({"repo-path": repo_path, "branch": branch, "message": message, "result": result})
+        result = repo_manager.get_repo_session(repo_path).git_add_commit_push(message)
+        return jsonify({"repo-path": repo_path, "branch": repo_manager.get_active_branch(), "message": message, "result": result})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
@@ -183,7 +176,7 @@ def gitDiff(branch):
         return jsonify({"error": "No repo_path provided and no active repository selected"}), 400
     
     try:
-        result = git_diff(repo_path, branch)
+        result = repo_manager.get_repo_session(repo_path).git_diff(branch)
         return jsonify({"repo-path": repo_path, "branch": branch, "result": result})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
