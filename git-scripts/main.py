@@ -184,8 +184,6 @@ def gitDiff(branch):
 @app.route('/stash', methods=['POST'])
 def stash_changes():
     data = request.get_json()
-    if not data:
-        return jsonify({"error": "Missing request body"}), 400
     
     repo_path = data.get("repo_path")
     if not repo_path:
@@ -194,16 +192,9 @@ def stash_changes():
     if not repo_path:
         return jsonify({"error": "No repo_path provided and no active repository selected"}), 400
     
-    branch = data.get("branch")
-    if not branch:
-        branch = repo_manager.get_active_branch()
-    
-    if not branch:
-        return jsonify({"error": "No branch provided and no active branch selected"}), 400
-    
     try:
-        result = git_stash(repo_path, branch)
-        return jsonify({"repo-path": repo_path, "branch": branch, "result": result})
+        result = repo_manager.get_repo_session(repo_path).git_stash()
+        return jsonify({"repo-path": repo_path, "result": result})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
@@ -216,25 +207,16 @@ def list_stashes():
     if not repo_path:
         return jsonify({"error": "No repo_path provided and no active repository selected"}), 400
     
-    branch = request.args.get("branch")
-    if not branch:
-        branch = repo_manager.get_active_branch()
-    
-    if not branch:
-        return jsonify({"error": "No branch provided and no active branch selected"}), 400
-    
     try:
-        result = git_stash_list(repo_path, branch)
-        return jsonify({"repo-path": repo_path, "branch": branch, "result": result})
+        result = repo_manager.get_repo_session(repo_path).git_stash_list()
+        return jsonify({"repo-path": repo_path, "result": result})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
 @app.route('/stash/pop', methods=['POST'])
 def pop_stash():
     data = request.get_json()
-    if not data:
-        return jsonify({"error": "Missing request body"}), 400
-    
+
     repo_path = data.get("repo_path")
     if not repo_path:
         repo_path = repo_manager.get_active_repo_path()
@@ -242,16 +224,9 @@ def pop_stash():
     if not repo_path:
         return jsonify({"error": "No repo_path provided and no active repository selected"}), 400
     
-    branch = data.get("branch")
-    if not branch:
-        branch = repo_manager.get_active_branch()
-    
-    if not branch:
-        return jsonify({"error": "No branch provided and no active branch selected"}), 400
-    
     try:
-        result = git_stash_pop(repo_path, branch)
-        return jsonify({"repo-path": repo_path, "branch": branch, "result": result})
+        result = repo_manager.get_repo_session(repo_path).git_stash_pop()
+        return jsonify({"repo-path": repo_path, "result": result})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 

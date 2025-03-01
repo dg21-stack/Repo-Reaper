@@ -4,8 +4,9 @@ from MethodBundles.ReflogMethods import ReflogMethods
 from MethodBundles.LogMethods import LogMethods
 from MethodBundles.DiffMethods import DiffMethods
 from MethodBundles.CommitMethods import CommitMethods   
+from MethodBundles.StashMethods import StashMethods
 
-class GitRepoSession(GitRepoSessionBase, BranchMethods, ReflogMethods, LogMethods, DiffMethods, CommitMethods):
+class GitRepoSession(GitRepoSessionBase, BranchMethods, ReflogMethods, LogMethods, DiffMethods, CommitMethods, StashMethods):
     """
     Git Repository Session class that combines functionality from multiple modules.
     
@@ -13,5 +14,9 @@ class GitRepoSession(GitRepoSessionBase, BranchMethods, ReflogMethods, LogMethod
     - GitRepoSessionBase: Core functionality and properties
     - BranchMethods: Branch-related operations
     - ReflogMethods: Reflog-related operations
+    - LogMethods: Log-related operations
+    - DiffMethods: Diff-related operations
+    - CommitMethods: Commit-related operations
+    - StashMethods: Stash-related operations
     """
     pass

@@ -48,7 +48,7 @@ class BranchMethods:
         
     
     def delete_git_branch(self, branch_name):
-        if self.current_branch == branch_name:
+        if self.current_branch == branch_name: # Delete will fail if not checked out of branch to be deleted
             self.switch_branch("main") #TODO: Either keep track of main branch name in case its not main, or keep cache of previously visited branches
         try:
             result = [self._run_git_command(["git", "branch", "-d", branch_name])]

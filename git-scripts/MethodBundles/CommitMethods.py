@@ -10,11 +10,12 @@ class CommitMethods:
     
     def git_commit(self, message):
         try:
-            result = self._run_git_command(["git", "commit", "-m"] + message.split(" "))
+            # Use a string command instead of a list to preserve the message
+            result = self._run_git_command(f'git commit -m "{message}"')
             print(result)
             return result
         except Exception as e:
-            print(e)
+            print(f"Git commit error: {e}")
             return e
 
     def git_push(self):
@@ -43,6 +44,9 @@ class CommitMethods:
                 return e
 
     def git_add_commit_push(self, message):
+        diff = self.git_diff()
+        if not diff:
+            raise Exception("No changes to commit")
         add = self.git_add()
         commit = self.git_commit(message)
         push = self.git_push()
