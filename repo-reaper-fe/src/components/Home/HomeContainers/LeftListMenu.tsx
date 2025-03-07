@@ -2,11 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Button, IconButton, Menu, MenuItem, Stack } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import {
-  add,
-  getAllBranches,
-  getDiff,
-} from "../../../service/CommitHistoryService";
+import { getAllBranches } from "../../../service/CommitHistoryService";
 import { Add } from "@mui/icons-material";
 
 interface IButtonWithDropdown {

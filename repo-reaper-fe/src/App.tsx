@@ -10,7 +10,6 @@ import { setActiveRepo } from "./service/StartupService";
 const initializeActiveRepo = async (repoPath: string) => {
   try {
     const response = await setActiveRepo(repoPath);
-    console.log(response);
     return response;
   } catch (error) {
     console.error("Error setting active repository:", error);
@@ -30,7 +29,6 @@ function App() {
           "C:/Users/Daniel/Repo-Reaper"
         );
         setLoading(false);
-        console.log(response);
         setCurrentBranch(response.current_branch);
       } catch (error) {
         setError("Failed to set active repository.");

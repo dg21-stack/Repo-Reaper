@@ -12,14 +12,13 @@ import {
   switchBranch,
 } from "../../service/CommitHistoryService";
 
-// Define the structure of a file/folder item
 interface FileStructureItem {
-  id: string; // Unique identifier
+  id: string;
   name: string;
   type: string;
-  level: number; // Determines indentation
-  path: string; // Full path of the file/folder
-  diff: string | undefined; // Link to the file (null for folders)
+  level: number;
+  path: string;
+  diff: string | undefined;
 }
 
 interface IGridContainer {
@@ -52,38 +51,32 @@ export const GridContainer = ({
       const result = await getDiff(currentBranch);
       setCurrentDiff(result.result);
 
-      // Populate setFilePath based on result.result keys
       setFilePath((prevState) => {
         const updatedFilePaths: Record<string, FileStructureItem> = {};
-        let idCounter = 1; // Counter for generating unique IDs
+        let idCounter = 1;
 
-        // Helper function to add a folder or file to updatedFilePaths
         const addItem = (path: string, isFolder: boolean, diff?: string) => {
           const pathParts = path.split("/");
-          const name = pathParts.pop() || path; // Extract the name (file or folder)
+          const name = pathParts.pop() || path;
           const level = pathParts.length;
 
-          // Generate a unique ID
           const id = String(idCounter);
           idCounter++;
 
-          // Add the item to updatedFilePaths
           updatedFilePaths[id] = {
             id,
             name,
             type: isFolder ? "folder" : "file",
             level,
             path,
-            diff: isFolder ? undefined : diff, // Only files have diffs
+            diff: isFolder ? undefined : diff,
           };
         };
 
-        // Iterate through the keys in result.result (file paths)
         Object.keys(result.result).forEach((filePath) => {
           const pathParts = filePath.split("/");
           let currentPath = "";
 
-          // Iterate through each part of the path to extract folders
           pathParts.forEach((part, index) => {
             currentPath += index === 0 ? part : `/${part}`;
             const isFolder = index < pathParts.length - 1;
@@ -92,12 +85,11 @@ export const GridContainer = ({
               (item) => item.path === currentPath
             );
 
-            // If it doesn't exist, add it
             if (!exists) {
               addItem(
                 currentPath,
                 isFolder,
-                isFolder ? undefined : result.result[filePath] // Pass the diff for files
+                isFolder ? undefined : result.result[filePath]
               );
             }
           });
@@ -205,9 +197,8 @@ export const GridContainer = ({
                     color="primary"
                     fullWidth
                     onClick={handleCommit}
-                    // disabled={Object.keys(currentDiff).length > 0}
                     sx={{
-                      bgcolor: "#7289da", // Purple color
+                      bgcolor: "#7289da",
                       "&:hover": {
                         bgcolor: "#3700b3",
                       },
@@ -223,7 +214,7 @@ export const GridContainer = ({
                   fullWidth
                   onClick={handlePush}
                   sx={{
-                    bgcolor: "#03dac6", // Teal
+                    bgcolor: "#03dac6",
                     "&:hover": {
                       bgcolor: "#018786",
                     },
