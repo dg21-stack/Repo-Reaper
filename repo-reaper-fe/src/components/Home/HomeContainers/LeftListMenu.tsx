@@ -19,6 +19,8 @@ export const ButtonWithDropdown = ({ currentBranch }: IButtonWithDropdown) => {
   );
   const [branches, setBranches] = useState<string[]>([]);
   const [currentDiff, setCurrentDiff] = useState("");
+  const [addClicked, setAddClicked] = useState(false);
+
   useEffect(() => {
     fetchBranchData();
     fetchDiffData();
@@ -89,8 +91,11 @@ export const ButtonWithDropdown = ({ currentBranch }: IButtonWithDropdown) => {
       </Menu>
       <IconButton
         sx={{ color: "white" }}
-        disabled={currentDiff.length < 2}
-        onClick={async () => await add()}
+        disabled={currentDiff.length < 2 || addClicked}
+        onClick={async () => {
+          await add();
+          setAddClicked(true);
+        }}
       >
         <Add />
       </IconButton>
