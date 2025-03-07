@@ -205,7 +205,7 @@ export const GridContainer = ({
                     color="primary"
                     fullWidth
                     onClick={handleCommit}
-                    disabled={Object.keys(currentDiff).length > 0}
+                    // disabled={Object.keys(currentDiff).length > 0}
                     sx={{
                       bgcolor: "#7289da", // Purple color
                       "&:hover": {
