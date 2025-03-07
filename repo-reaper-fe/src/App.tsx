@@ -11,7 +11,7 @@ const initializeActiveRepo = async (repoPath: string) => {
   try {
     const response = await setActiveRepo(repoPath);
     console.log(response);
-    return response.data;
+    return response;
   } catch (error) {
     console.error("Error setting active repository:", error);
     throw error;
@@ -21,13 +21,17 @@ const initializeActiveRepo = async (repoPath: string) => {
 function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
+  const [currentBranch, setCurrentBranch] = useState<string | null>(null);
   useEffect(() => {
     const setActiveRepository = async () => {
       try {
         // Replace "C:/Users/Daniel/Repo-Reaper" with the actual repo path you want to set
-        await initializeActiveRepo("C:/Users/Daniel/Repo-Reaper");
+        const response = await initializeActiveRepo(
+          "C:/Users/Daniel/Repo-Reaper"
+        );
         setLoading(false);
+        console.log(response);
+        setCurrentBranch(response.current_branch);
       } catch (error) {
         setError("Failed to set active repository.");
         setLoading(false);
@@ -64,7 +68,10 @@ function App() {
 
         <Router>
           <Routes>
-            <Route path="/" element={<GridContainer />} />
+            <Route
+              path="/"
+              element={<GridContainer currentBranch={currentBranch} />}
+            />
             <Route path="/history" element={<BranchHistory />} />
           </Routes>
         </Router>

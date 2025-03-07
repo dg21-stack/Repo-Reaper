@@ -44,7 +44,11 @@ const fileStructure: Record<string, FileStructureItem> = {
   },
 };
 
-export const GridContainer = () => {
+interface IGridContainer {
+  currentBranch: string | null;
+}
+
+export const GridContainer = ({ currentBranch }: IGridContainer) => {
   const [selectedId, setSelectedId] = React.useState<string | null>(null);
   const [gitState, setGitState] = React.useState<"commit" | "push">("commit");
   const [commitMessage, setCommitMessage] = React.useState("");
@@ -99,7 +103,7 @@ export const GridContainer = () => {
               borderRight: "1px solid #333",
             }}
           >
-            <ButtonWithDropdown />
+            <ButtonWithDropdown currentBranch={currentBranch} />
             <Stack spacing={0} sx={{ mt: 2, flex: 1 }}>
               {Object.values(fileStructure).map((item) => (
                 <LeftMenuListItem

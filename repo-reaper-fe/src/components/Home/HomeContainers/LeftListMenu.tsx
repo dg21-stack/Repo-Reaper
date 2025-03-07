@@ -2,24 +2,41 @@ import React, { useEffect, useState } from "react";
 import { Button, IconButton, Menu, MenuItem, Stack } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import { getAllBranches } from "../../../service/CommitHistoryService";
+import {
+  add,
+  getAllBranches,
+  getDiff,
+} from "../../../service/CommitHistoryService";
+import { Add } from "@mui/icons-material";
 
-export const ButtonWithDropdown = () => {
+interface IButtonWithDropdown {
+  currentBranch: string | null;
+}
+export const ButtonWithDropdown = ({ currentBranch }: IButtonWithDropdown) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [branchAnchorEl, setBranchAnchorEl] = useState<null | HTMLElement>(
     null
   );
   const [branches, setBranches] = useState<string[]>([]);
-
+  const [currentDiff, setCurrentDiff] = useState("");
   useEffect(() => {
     fetchBranchData();
-  }, []);
+    fetchDiffData();
+  }, [currentBranch]);
 
   const open = Boolean(anchorEl);
   const branchOpen = Boolean(branchAnchorEl);
   const fetchBranchData = async () => {
     const result = await getAllBranches();
     setBranches(result.branches);
+  };
+  const fetchDiffData = async () => {
+    console.log(currentBranch);
+    if (currentBranch) {
+      const result = await getDiff(currentBranch);
+      console.log(result);
+      setCurrentDiff(result.result);
+    }
   };
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -70,7 +87,13 @@ export const ButtonWithDropdown = () => {
           </MenuItem>
         ))}
       </Menu>
-
+      <IconButton
+        sx={{ color: "white" }}
+        disabled={currentDiff.length < 2}
+        onClick={async () => await add()}
+      >
+        <Add />
+      </IconButton>
       {/* Right Side - More Options Dropdown Button */}
       <IconButton onClick={handleClick} sx={{ color: "white" }}>
         <MoreVertIcon fontSize="medium" />

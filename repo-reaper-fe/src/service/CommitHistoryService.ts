@@ -85,11 +85,11 @@ export const addCommitPush = async (message: string): Promise<any> => {
 
   return result.data;
 };
-export const add = async (branch: string): Promise<any> => {
+export const add = async (): Promise<any> => {
   const URL = `${APIUrl}/branches/current/add`;
 
   const result = await axios.post(URL, {
-    branch: branch
+    message: ""
     });
 
   return result.data;
@@ -114,12 +114,10 @@ export const push = async (): Promise<any> => {
 };
 
 // Get diff between branches
-export const getDiff = async (repoPath: string, branch: string): Promise<any> => {
+export const getDiff = async (branch: string): Promise<any> => {
   const URL = `${APIUrl}/branches/current/diff/${branch}`;
 
-  const result = await axios.get(URL, {
-    params: { repo_path: repoPath },
-  });
+  const result = await axios.get(URL);
 
   return result.data;
 };

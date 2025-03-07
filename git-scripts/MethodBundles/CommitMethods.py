@@ -2,7 +2,6 @@ class CommitMethods:
     def git_add(self):
         try:
             result = self._run_git_command(["git", "add", "."])
-            print(result)
             return result
         except Exception as e:
             print(e)
@@ -12,7 +11,6 @@ class CommitMethods:
         try:
             # Use a string command instead of a list to preserve the message
             result = self._run_git_command(f'git commit -m "{message}"')
-            print(result)
             return result
         except Exception as e:
             print(f"Git commit error: {e}")
@@ -22,7 +20,6 @@ class CommitMethods:
         try:
             # First try a regular push
             result = self._run_git_command(["git", "push"])
-            print(result)
             return result
         except Exception as e:
             # Check if the error is about no upstream branch

@@ -81,7 +81,6 @@ export function BranchHistory() {
   const fetchRefLogs = async (branchIndex: number) => {
     try {
       const result = await getReflog(branches[branchIndex].branch);
-      console.log(result);
       setCommandHistory(result.reflog);
     } catch (err) {}
   };
