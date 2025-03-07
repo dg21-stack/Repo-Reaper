@@ -106,7 +106,7 @@ export const commit = async (message: string): Promise<any> => {
 export const push = async (): Promise<any> => {
   const URL = `${APIUrl}/branches/current/push`;
 
-  const result = await axios.post(URL);
+  const result = await axios.get(URL);
 
   return result.data;
 };

@@ -187,11 +187,9 @@ def git_commit():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
     
-@app.route('/branches/current/push', methods=['POST'])
+@app.route('/branches/current/push', methods=['GET'])
 def git_push():
     data = request.get_json()
-    if not data:
-        return jsonify({"error": "Missing message in request body"}), 400
     
     repo_path = data.get("repo_path")
     if not repo_path:
