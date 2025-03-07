@@ -1,10 +1,16 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Stack, TextField, Button, Grid, Fade } from "@mui/material";
 import { ButtonWithDropdown } from "./HomeContainers/LeftListMenu";
 import { LeftMenuListItem } from "./HomeContainers/LeftMenuListItem";
 import { ButtonRow } from "./HomeContainers/ButtonRow";
 import { PdfContainer } from "./HomeContainers/EmbeddedBinariesComponent";
-import { commit, push } from "../../service/CommitHistoryService";
+import {
+  add,
+  commit,
+  getDiff,
+  push,
+  switchBranch,
+} from "../../service/CommitHistoryService";
 
 // Define the structure of a file/folder item
 interface FileStructureItem {
@@ -13,64 +19,113 @@ interface FileStructureItem {
   type: string;
   level: number; // Determines indentation
   path: string; // Full path of the file/folder
-  link: string | null; // Link to the file (null for folders)
+  diff: string | undefined; // Link to the file (null for folders)
 }
-
-// Define the file structure as a dictionary indexed by id
-const fileStructure: Record<string, FileStructureItem> = {
-  "1": {
-    id: "1",
-    name: "Documents",
-    type: "folder",
-    level: 0,
-    path: "Documents",
-    link: null,
-  },
-  "2": {
-    id: "2",
-    name: "Project",
-    type: "folder",
-    level: 1,
-    path: "Documents/Project",
-    link: null,
-  },
-  "3": {
-    id: "3",
-    name: "report.docx",
-    type: "file",
-    level: 2,
-    path: "Documents/Project/report.docx",
-    link: "https://www.rd.usda.gov/sites/default/files/pdf-sample_0.pdf",
-  },
-};
 
 interface IGridContainer {
   currentBranch: string | null;
+  setCurrentBranch: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
-export const GridContainer = ({ currentBranch }: IGridContainer) => {
-  const [selectedId, setSelectedId] = React.useState<string | null>(null);
-  const [gitState, setGitState] = React.useState<"commit" | "push">("commit");
-  const [commitMessage, setCommitMessage] = React.useState("");
+export const GridContainer = ({
+  currentBranch,
+  setCurrentBranch,
+}: IGridContainer) => {
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [gitState, setGitState] = useState<"commit" | "push">("commit");
+  const [commitMessage, setCommitMessage] = useState("");
+  const [currentDiff, setCurrentDiff] = useState<[]>([]);
+  const [filePath, setFilePath] = useState<Record<
+    string,
+    FileStructureItem
+  > | null>(null);
 
   const handleItemClick = (id: string) => {
     setSelectedId(id);
   };
+  useEffect(() => {
+    fetchDiffData();
+  }, [currentBranch]);
 
+  const fetchDiffData = async () => {
+    if (currentBranch) {
+      const result = await getDiff(currentBranch);
+      setCurrentDiff(result.result);
+
+      // Populate setFilePath based on result.result keys
+      setFilePath((prevState) => {
+        const updatedFilePaths: Record<string, FileStructureItem> = {};
+        let idCounter = 1; // Counter for generating unique IDs
+
+        // Helper function to add a folder or file to updatedFilePaths
+        const addItem = (path: string, isFolder: boolean, diff?: string) => {
+          const pathParts = path.split("/");
+          const name = pathParts.pop() || path; // Extract the name (file or folder)
+          const level = pathParts.length;
+
+          // Generate a unique ID
+          const id = String(idCounter);
+          idCounter++;
+
+          // Add the item to updatedFilePaths
+          updatedFilePaths[id] = {
+            id,
+            name,
+            type: isFolder ? "folder" : "file",
+            level,
+            path,
+            diff: isFolder ? undefined : diff, // Only files have diffs
+          };
+        };
+
+        // Iterate through the keys in result.result (file paths)
+        Object.keys(result.result).forEach((filePath) => {
+          const pathParts = filePath.split("/");
+          let currentPath = "";
+
+          // Iterate through each part of the path to extract folders
+          pathParts.forEach((part, index) => {
+            currentPath += index === 0 ? part : `/${part}`;
+            const isFolder = index < pathParts.length - 1;
+
+            const exists = Object.values(updatedFilePaths).some(
+              (item) => item.path === currentPath
+            );
+
+            // If it doesn't exist, add it
+            if (!exists) {
+              addItem(
+                currentPath,
+                isFolder,
+                isFolder ? undefined : result.result[filePath] // Pass the diff for files
+              );
+            }
+          });
+        });
+
+        return updatedFilePaths;
+      });
+    }
+  };
+  const handleSwitch = async (branch: string) => {
+    await switchBranch(branch);
+    setCurrentBranch(branch);
+  };
+  const handleAdd = async () => {
+    await add();
+  };
   const handleCommit = async () => {
-    console.log("Commit message:", commitMessage);
     await commit(commitMessage);
     setGitState("push");
+    setCurrentDiff([]);
   };
 
   const handlePush = async () => {
-    console.log("Pushing changes...");
     await push();
     setGitState("commit");
   };
 
-  const selectedFile = selectedId ? fileStructure[selectedId] : null;
-
+  const selectedFile = selectedId && filePath ? filePath[selectedId] : null;
   return (
     <Fade in={true}>
       <Grid
@@ -103,20 +158,25 @@ export const GridContainer = ({ currentBranch }: IGridContainer) => {
               borderRight: "1px solid #333",
             }}
           >
-            <ButtonWithDropdown currentBranch={currentBranch} />
+            <ButtonWithDropdown
+              currentBranch={currentBranch}
+              currentDiff={currentDiff}
+              handleAdd={handleAdd}
+            />
             <Stack spacing={0} sx={{ mt: 2, flex: 1 }}>
-              {Object.values(fileStructure).map((item) => (
-                <LeftMenuListItem
-                  key={item.id}
-                  id={item.id}
-                  name={item.name}
-                  type={item.type}
-                  level={item.level}
-                  path={item.path}
-                  isSelected={selectedId === item.id}
-                  onClick={handleItemClick}
-                />
-              ))}
+              {filePath &&
+                Object.values(filePath).map((item) => (
+                  <LeftMenuListItem
+                    key={item.id}
+                    id={item.id}
+                    name={item.name}
+                    type={item.type}
+                    level={item.level}
+                    path={item.path}
+                    isSelected={selectedId === item.id}
+                    onClick={handleItemClick}
+                  />
+                ))}
             </Stack>
 
             {/* Commit Section */}
@@ -145,6 +205,7 @@ export const GridContainer = ({ currentBranch }: IGridContainer) => {
                     color="primary"
                     fullWidth
                     onClick={handleCommit}
+                    disabled={Object.keys(currentDiff).length > 0}
                     sx={{
                       bgcolor: "#7289da", // Purple color
                       "&:hover": {

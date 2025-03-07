@@ -11,19 +11,22 @@ import { Add } from "@mui/icons-material";
 
 interface IButtonWithDropdown {
   currentBranch: string | null;
+  currentDiff: [];
+  handleAdd: () => void;
 }
-export const ButtonWithDropdown = ({ currentBranch }: IButtonWithDropdown) => {
+export const ButtonWithDropdown = ({
+  currentBranch,
+  currentDiff,
+  handleAdd,
+}: IButtonWithDropdown) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [branchAnchorEl, setBranchAnchorEl] = useState<null | HTMLElement>(
     null
   );
   const [branches, setBranches] = useState<string[]>([]);
-  const [currentDiff, setCurrentDiff] = useState("");
   const [addClicked, setAddClicked] = useState(false);
-
   useEffect(() => {
     fetchBranchData();
-    fetchDiffData();
   }, [currentBranch]);
 
   const open = Boolean(anchorEl);
@@ -32,14 +35,7 @@ export const ButtonWithDropdown = ({ currentBranch }: IButtonWithDropdown) => {
     const result = await getAllBranches();
     setBranches(result.branches);
   };
-  const fetchDiffData = async () => {
-    console.log(currentBranch);
-    if (currentBranch) {
-      const result = await getDiff(currentBranch);
-      console.log(result);
-      setCurrentDiff(result.result);
-    }
-  };
+
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -73,6 +69,7 @@ export const ButtonWithDropdown = ({ currentBranch }: IButtonWithDropdown) => {
             bgcolor: "#3700b3",
           },
         }}
+        disabled={Object.keys(currentDiff).length !== 0}
       >
         Select Branch
       </Button>
@@ -92,10 +89,7 @@ export const ButtonWithDropdown = ({ currentBranch }: IButtonWithDropdown) => {
       <IconButton
         sx={{ color: "white" }}
         disabled={currentDiff.length < 2 || addClicked}
-        onClick={async () => {
-          await add();
-          setAddClicked(true);
-        }}
+        onClick={handleAdd}
       >
         <Add />
       </IconButton>

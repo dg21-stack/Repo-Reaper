@@ -70,7 +70,12 @@ function App() {
           <Routes>
             <Route
               path="/"
-              element={<GridContainer currentBranch={currentBranch} />}
+              element={
+                <GridContainer
+                  currentBranch={currentBranch}
+                  setCurrentBranch={setCurrentBranch}
+                />
+              }
             />
             <Route path="/history" element={<BranchHistory />} />
           </Routes>

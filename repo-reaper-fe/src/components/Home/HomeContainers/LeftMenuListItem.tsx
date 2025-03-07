@@ -28,7 +28,7 @@ export const LeftMenuListItem: React.FC<ListItemProps> = ({
       alignItems="center"
       spacing={1}
       sx={{
-        pl: level * 2,
+        pl: (level + 1) * 2,
         cursor: "pointer",
         bgcolor: isSelected ? "#333" : "transparent", // Dark background if selected
         "&:hover": {
