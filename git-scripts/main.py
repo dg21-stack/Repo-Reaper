@@ -145,6 +145,68 @@ def git_reflog(branch):
     result = repo_manager.get_repo_session(repo_path).get_reflog_specific_branch(branch)
     return jsonify({"repo-path": repo_path, "branch": branch, "reflog": result})
 
+
+@app.route('/branches/current/add', methods=['POST'])
+def git_add():
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "Missing message in request body"}), 400
+    
+    repo_path = data.get("repo_path")
+    if not repo_path:
+        repo_path = repo_manager.get_active_repo_path()
+    
+    if not repo_path:
+        return jsonify({"error": "No repo_path provided and no active repository selected"}), 400
+    
+    try:
+        result = repo_manager.get_repo_session(repo_path).git_add()
+        return jsonify({"repo-path": repo_path, "branch": repo_manager.get_active_branch(),"result": result})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    
+@app.route('/branches/current/commit', methods=['POST'])
+def git_commit():
+    data = request.get_json()
+    if not data or 'message' not in data:
+        return jsonify({"error": "Missing message in request body"}), 400
+    
+    repo_path = data.get("repo_path")
+    if not repo_path:
+        repo_path = repo_manager.get_active_repo_path()
+    
+    if not repo_path:
+        print('reached')
+        return jsonify({"error": "No repo_path provided and no active repository selected"}), 400
+    
+    message = data['message']
+    
+    try:
+        result = repo_manager.get_repo_session(repo_path).git_commit(message)
+        return jsonify({"repo-path": repo_path, "branch": repo_manager.get_active_branch(), "message": message, "result": result})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    
+@app.route('/branches/current/push', methods=['POST'])
+def git_push():
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "Missing message in request body"}), 400
+    
+    repo_path = data.get("repo_path")
+    if not repo_path:
+        repo_path = repo_manager.get_active_repo_path()
+    
+    if not repo_path:
+        return jsonify({"error": "No repo_path provided and no active repository selected"}), 400
+        
+    try:
+        result = repo_manager.get_repo_session(repo_path).git_push()
+        return jsonify({"repo-path": repo_path, "branch": repo_manager.get_active_branch(), "result": result})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    
+
 @app.route('/branches/current/add-commit-push', methods=['POST'])
 def git_add_commit_push():
     data = request.get_json()

@@ -287,7 +287,7 @@ export const AnimatedTimeline = ({
             sx={{
               overflow: "auto",
               maxHeight: "400px", // Adjust height as needed
-              // width: "350px",
+              width: "435px",
               "&::-webkit-scrollbar": {
                 width: "8px",
               },

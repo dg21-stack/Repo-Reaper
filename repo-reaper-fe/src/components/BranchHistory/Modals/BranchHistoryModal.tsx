@@ -95,7 +95,7 @@ export const BranchHistoryModal = ({
       setTitle(timelineData.branch);
       setExpandedCommitId(null); // Reset expanded commit when modal opens
     }
-  }, [isOpen]);
+  }, [isOpen, commandHistory]);
   console.log(groupedHistory);
   // Handler for node clicks (from timeline or commit list)
   const nodeClickHandler = (nodeId: string) => {

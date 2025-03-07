@@ -76,14 +76,37 @@ export const getReflog = async (branch: string): Promise<any> => {
 };
 
 // Add, commit, and push changes
-export const addCommitPush = async (repoPath: string, branch: string, message: string): Promise<any> => {
+export const addCommitPush = async (message: string): Promise<any> => {
   const URL = `${APIUrl}/branches/current/add-commit-push`;
 
   const result = await axios.post(URL, {
-    repo_path: repoPath,
-    branch: branch,
     message: message,
   });
+
+  return result.data;
+};
+export const add = async (branch: string): Promise<any> => {
+  const URL = `${APIUrl}/branches/current/add`;
+
+  const result = await axios.post(URL, {
+    branch: branch
+    });
+
+  return result.data;
+};
+export const commit = async (message: string): Promise<any> => {
+  const URL = `${APIUrl}/branches/current/commit`;
+
+  const result = await axios.post(URL, {
+    message: message,
+  });
+
+  return result.data;
+};
+export const push = async (): Promise<any> => {
+  const URL = `${APIUrl}/branches/current/push`;
+
+  const result = await axios.post(URL);
 
   return result.data;
 };

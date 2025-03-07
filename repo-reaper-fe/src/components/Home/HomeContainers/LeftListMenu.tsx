@@ -1,16 +1,26 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, IconButton, Menu, MenuItem, Stack } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import { getAllBranches } from "../../../service/CommitHistoryService";
 
 export const ButtonWithDropdown = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [branchAnchorEl, setBranchAnchorEl] = useState<null | HTMLElement>(
-    null,
+    null
   );
+  const [branches, setBranches] = useState<string[]>([]);
+
+  useEffect(() => {
+    fetchBranchData();
+  }, []);
+
   const open = Boolean(anchorEl);
   const branchOpen = Boolean(branchAnchorEl);
-
+  const fetchBranchData = async () => {
+    const result = await getAllBranches();
+    setBranches(result.branches);
+  };
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -28,7 +38,6 @@ export const ButtonWithDropdown = () => {
   };
 
   // Example list of branches
-  const branches = ["main", "develop", "feature-1", "feature-2"];
 
   return (
     <Stack direction="row" alignItems="center" spacing={2} width="95%" p={2}>

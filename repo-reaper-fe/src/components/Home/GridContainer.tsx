@@ -4,6 +4,7 @@ import { ButtonWithDropdown } from "./HomeContainers/LeftListMenu";
 import { LeftMenuListItem } from "./HomeContainers/LeftMenuListItem";
 import { ButtonRow } from "./HomeContainers/ButtonRow";
 import { PdfContainer } from "./HomeContainers/EmbeddedBinariesComponent";
+import { commit, push } from "../../service/CommitHistoryService";
 
 // Define the structure of a file/folder item
 interface FileStructureItem {
@@ -52,13 +53,15 @@ export const GridContainer = () => {
     setSelectedId(id);
   };
 
-  const handleCommit = () => {
+  const handleCommit = async () => {
     console.log("Commit message:", commitMessage);
+    await commit(commitMessage);
     setGitState("push");
   };
 
-  const handlePush = () => {
+  const handlePush = async () => {
     console.log("Pushing changes...");
+    await push();
     setGitState("commit");
   };
 

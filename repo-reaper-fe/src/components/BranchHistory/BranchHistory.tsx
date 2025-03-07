@@ -71,18 +71,17 @@ export function BranchHistory() {
       try {
         const result = await getAllLogs();
         setBranches(result.result.branchHistory);
-        console.log(result.result.branchHistory);
       } catch (err) {
         console.error("Error fetching logs:", err);
       }
     };
 
     fetchLogs();
-    fetchRefLogs(0);
   }, []);
   const fetchRefLogs = async (branchIndex: number) => {
     try {
       const result = await getReflog(branches[branchIndex].branch);
+      console.log(result);
       setCommandHistory(result.reflog);
     } catch (err) {}
   };
@@ -123,6 +122,7 @@ export function BranchHistory() {
     setSelectedTimeline((prev) => (prev === branchIndex ? null : branchIndex));
     setSelectedNode({ id: null });
     setIsModalOpen(true);
+    fetchRefLogs(branchIndex);
   };
 
   const handleClickOutside = () => {
@@ -420,8 +420,8 @@ export function BranchHistory() {
           sx={{
             overflow: "hidden",
             display: "flex",
-            justifyContent: viewMode === "timeline" ? "center" : "center",
-            alignItems: viewMode === "timeline" ? "center" : "center",
+            justifyContent: "center",
+            alignItems: "center",
             flexGrow: 1,
             width: "100%",
             position: "relative",

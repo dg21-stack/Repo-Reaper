@@ -10,6 +10,7 @@ import { setActiveRepo } from "./service/StartupService";
 const initializeActiveRepo = async (repoPath: string) => {
   try {
     const response = await setActiveRepo(repoPath);
+    console.log(response);
     return response.data;
   } catch (error) {
     console.error("Error setting active repository:", error);
