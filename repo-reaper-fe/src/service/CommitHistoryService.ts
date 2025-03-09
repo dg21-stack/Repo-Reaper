@@ -85,8 +85,8 @@ export const addCommitPush = async (message: string): Promise<any> => {
 
   return result.data;
 };
-export const add = async (): Promise<any> => {
-  const URL = `${APIUrl}/branches/current/add`;
+export const addAll = async (): Promise<any> => {
+  const URL = `${APIUrl}/branches/current/add-all`;
 
   const result = await axios.post(URL, {
     message: ""
@@ -94,6 +94,14 @@ export const add = async (): Promise<any> => {
 
   return result.data;
 };
+export const addSpecific = async (file_list: string[]): Promise<any> => {
+  const URL = `${APIUrl}/branches/current/add-specific`;
+  const result = await axios.post(URL, {
+    file_list
+    });
+
+  return result.data;
+}
 export const commit = async (message: string): Promise<any> => {
   const URL = `${APIUrl}/branches/current/commit`;
 

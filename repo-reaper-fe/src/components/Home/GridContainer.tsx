@@ -7,13 +7,15 @@ import {
   Grid,
   Fade,
   Typography,
+  FormGroup,
 } from "@mui/material";
 import { ButtonWithDropdown } from "./HomeContainers/LeftListMenu";
 import { LeftMenuListItem } from "./HomeContainers/LeftMenuListItem";
 import { ButtonRow } from "./HomeContainers/ButtonRow";
 import { PdfContainer } from "./HomeContainers/EmbeddedBinariesComponent";
 import {
-  add,
+  addSpecific,
+  addAll,
   commit,
   getDiff,
   getStatus,
@@ -56,127 +58,49 @@ export const GridContainer = ({
   };
 
   useEffect(() => {
-    fetchDiffData();
+    fetchDiff();
   }, [currentBranch]);
 
-  const fetchStatusCheck = async () => {
+  const fetchDiff = async () => {
     if (currentBranch) {
-      const result = await getStatus(currentBranch);
+      const result = await getDiff(currentBranch);
+      console.log(result);
       if (hasStaging != result.result.hasStaging) {
         setHasStaging(result.result.hasStaging);
       }
       if (hasUnstaged != result.result.hasUnstaged) {
         setHasUnstaged(result.result.hasUnstaged);
       }
+      setFilePath(result.result.diff_dict);
       return result;
     }
     return null;
   };
-  const fetchDiffData = async () => {
-    if (currentBranch) {
-      // Fetch both the diff data and the status check
-      const [diffResult, statusResult] = await Promise.all([
-        getDiff(currentBranch),
-        fetchStatusCheck(),
-      ]);
 
-      setFilePath((prevState) => {
-        const updatedFilePaths: Record<string, FileStructureItem> = {};
-        let idCounter = 1;
-
-        // Helper function to normalize paths
-        const normalizePath = (path: string) => {
-          return path.replace(/\\/g, "/").replace(/^\/|\/$/g, ""); // Normalize slashes and remove leading/trailing slashes
-        };
-
-        const addItem = (
-          path: string,
-          isFolder: boolean,
-          diff?: string,
-          staged?: boolean,
-          unstaged?: boolean
-        ) => {
-          const pathParts = path.split("/");
-          const name = pathParts.pop() || path;
-          const level = pathParts.length;
-
-          const id = String(idCounter);
-          idCounter++;
-
-          updatedFilePaths[id] = {
-            id,
-            name,
-            type: isFolder ? "folder" : "file",
-            level,
-            path,
-            diff: isFolder ? undefined : diff,
-            staged, // Boolean indicating if the file has staged changes
-            unstaged, // Boolean indicating if the file has unstaged changes
-          };
-        };
-
-        // Normalize staged and unstaged file paths
-        const stagedFiles = new Set(
-          (statusResult?.result.result.staged || []).map(normalizePath)
-        );
-        const unstagedFiles = new Set(
-          (statusResult?.result.result.unstaged || []).map(normalizePath)
-        );
-
-        Object.keys(diffResult.result).forEach((filePath) => {
-          const normalizedFilePath = normalizePath(filePath);
-          const pathParts = normalizedFilePath.split("/");
-          let currentPath = "";
-
-          pathParts.forEach((part, index) => {
-            currentPath += index === 0 ? part : `/${part}`;
-            const isFolder = index < pathParts.length - 1;
-
-            const exists = Object.values(updatedFilePaths).some(
-              (item) => item.path === currentPath
-            );
-
-            if (!exists) {
-              // Determine if the file has staged or unstaged changes
-              let staged = false;
-              let unstaged = false;
-              if (!isFolder && statusResult) {
-                staged = stagedFiles.has(normalizedFilePath); // Check if the file has staged changes
-                unstaged = unstagedFiles.has(normalizedFilePath); // Check if the file has unstaged changes
-              }
-
-              addItem(
-                currentPath,
-                isFolder,
-                isFolder ? undefined : diffResult.result[filePath],
-                staged,
-                unstaged
-              );
-            }
-          });
-        });
-        return updatedFilePaths;
-      });
-    }
-  };
   const handleSwitch = async (branch: string) => {
     await switchBranch(branch);
     setCurrentBranch(branch);
   };
-  const handleAdd = async () => {
-    await add();
-    fetchDiffData();
+  const handleAddAll = async () => {
+    await addAll();
+    fetchDiff();
   };
+
+  const handleAddSpecific = async () => {
+    await addSpecific([]);
+    fetchDiff();
+  };
+
   const handleCommit = async () => {
     await commit(commitMessage);
     setGitState("push");
-    fetchDiffData();
+    fetchDiff();
   };
 
   const handlePush = async () => {
     await push();
     setGitState("commit");
-    fetchDiffData();
+    fetchDiff();
   };
 
   const selectedFile = selectedId && filePath ? filePath[selectedId] : null;
@@ -214,7 +138,7 @@ export const GridContainer = ({
           >
             <ButtonWithDropdown
               currentBranch={currentBranch}
-              handleAdd={handleAdd}
+              handleAdd={handleAddAll}
               addDisabled={!hasUnstaged}
               selectBranchDisabled={hasUnstaged}
             />
@@ -222,18 +146,20 @@ export const GridContainer = ({
             <Stack spacing={0} sx={{ mt: 2, flex: 1 }}>
               {filePath && Object.values(filePath).length > 1 ? (
                 Object.values(filePath).map((item) => (
-                  <LeftMenuListItem
-                    key={item.id}
-                    id={item.id}
-                    name={item.name}
-                    type={item.type}
-                    level={item.level}
-                    staged={item.staged ?? false}
-                    unstaged={item.unstaged ?? false}
-                    path={item.path}
-                    isSelected={selectedId === item.id}
-                    onClick={handleItemClick}
-                  />
+                  <FormGroup>
+                    <LeftMenuListItem
+                      key={item.id}
+                      id={item.id}
+                      name={item.name}
+                      type={item.type}
+                      level={item.level}
+                      staged={item.staged ?? false}
+                      unstaged={item.unstaged ?? false}
+                      path={item.path}
+                      isSelected={selectedId === item.id}
+                      onClick={handleItemClick}
+                    />
+                  </FormGroup>
                 ))
               ) : (
                 <Typography color="white" textAlign="center">

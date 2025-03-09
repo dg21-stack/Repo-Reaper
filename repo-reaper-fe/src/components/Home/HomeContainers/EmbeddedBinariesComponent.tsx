@@ -1,4 +1,11 @@
-import { Box, Paper, Breadcrumbs, Typography } from "@mui/material";
+import {
+  Box,
+  Paper,
+  Breadcrumbs,
+  Typography,
+  FormControlLabel,
+  Checkbox,
+} from "@mui/material";
 
 interface PdfContainerProps {
   selectedFile: {
@@ -18,63 +25,43 @@ export const PdfContainer = ({ selectedFile }: PdfContainerProps) => {
   const renderDiffLines = (diff: string) => {
     const lines = diff.split("\n");
     return lines.map((line, index) => {
+      let bgcolor = "#1e1e1e"; // Default background for unchanged lines
+      let borderColor = "transparent";
+      let textColor = "#ffffff"; // Default text color for unchanged lines
+
       if (line.startsWith("+")) {
-        return (
-          <Box
-            key={index}
-            sx={{
-              bgcolor: "#2a2f2a",
-              p: 0.5,
-              borderLeft: "2px solid #28a745",
-            }}
-          >
-            <Typography
-              variant="body2"
-              component="span"
-              sx={{ color: "#4caf50", fontFamily: "monospace" }}
-            >
-              {line}
-            </Typography>
-          </Box>
-        );
+        bgcolor = "#2a2f2a"; // Greenish background for added lines
+        borderColor = "#28a745"; // Green border for added lines
+        textColor = "#4caf50"; // Green text for added lines
       } else if (line.startsWith("-")) {
-        return (
-          <Box
-            key={index}
-            sx={{
-              bgcolor: "#3a2a2a",
-              p: 0.5,
-              borderLeft: "2px solid #cb2431",
-            }}
-          >
-            <Typography
-              variant="body2"
-              component="span"
-              sx={{ color: "#f44336", fontFamily: "monospace" }}
-            >
-              {line}
-            </Typography>
-          </Box>
-        );
-      } else {
-        return (
-          <Box
-            key={index}
-            sx={{
-              p: 0.5,
-              borderLeft: "2px solid transparent",
-            }}
-          >
-            <Typography
-              variant="body2"
-              component="span"
-              sx={{ color: "#ffffff", fontFamily: "monospace" }}
-            >
-              {line}
-            </Typography>
-          </Box>
-        );
+        bgcolor = "#3a2a2a"; // Reddish background for removed lines
+        borderColor = "#cb2431"; // Red border for removed lines
+        textColor = "#f44336"; // Red text for removed lines
       }
+
+      return (
+        <Box
+          key={index}
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            bgcolor,
+            p: 1,
+            borderLeft: `4px solid ${borderColor}`,
+            fontFamily: "monospace",
+            fontSize: "0.875rem",
+            lineHeight: "1.5",
+          }}
+        >
+          <Typography
+            variant="body2"
+            component="span"
+            sx={{ color: textColor, fontFamily: "monospace" }}
+          >
+            {line}
+          </Typography>
+        </Box>
+      );
     });
   };
 
@@ -96,8 +83,7 @@ export const PdfContainer = ({ selectedFile }: PdfContainerProps) => {
         sx={{
           flex: 1,
           overflowY: "auto",
-          p: 2,
-          bgcolor: "#36393f",
+          bgcolor: "#1e1e1e", // Dark background for the entire container
           "&::-webkit-scrollbar": {
             width: "8px",
           },
@@ -122,6 +108,7 @@ export const PdfContainer = ({ selectedFile }: PdfContainerProps) => {
             sx={{
               color: "white",
               textAlign: "center",
+              p: 2,
             }}
           >
             No files selected

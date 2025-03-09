@@ -1,7 +1,16 @@
 class CommitMethods:
-    def git_add(self):
+    def git_add_all_files(self):
         try:
             result = self._run_git_command(["git", "add", "."])
+            return result
+        except Exception as e:
+            print(e)
+            return e
+    
+    def git_add_specific_files(self, file_list):
+        try: 
+            command = ["git", "add"] + file_list
+            result = self._run(command)
             return result
         except Exception as e:
             print(e)

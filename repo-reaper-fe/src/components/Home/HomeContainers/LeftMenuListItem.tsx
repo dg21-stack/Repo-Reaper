@@ -1,5 +1,12 @@
 import React from "react";
-import { Stack, Typography, Box, Tooltip } from "@mui/material";
+import {
+  Stack,
+  Typography,
+  Box,
+  Tooltip,
+  FormControlLabel,
+  Checkbox,
+} from "@mui/material";
 import FolderIcon from "@mui/icons-material/Folder";
 import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle"; // Icon for staged changes
@@ -32,43 +39,59 @@ export const LeftMenuListItem: React.FC<ListItemProps> = ({
     <Stack
       direction="row"
       alignItems="center"
-      spacing={1}
       sx={{
-        pl: (level + 1) * 2,
-        cursor: "pointer",
-        bgcolor: isSelected ? "#333" : "transparent", // Dark background if selected
-        "&:hover": {
-          bgcolor: "#444", // Slightly lighter dark background on hover
-        },
+        pl: "10px",
+        color: "white",
       }}
-      onClick={() => onClick(id)}
     >
-      <Box>
-        {type === "folder" ? (
-          <FolderIcon sx={{ color: "#bb86fc" }} />
-        ) : (
-          <InsertDriveFileIcon sx={{ color: "#03dac6" }} />
-        )}
-      </Box>
-      <Typography variant="body1" sx={{ color: "white" }}>
-        {name}
-      </Typography>
-
-      {/* Staged and Unstaged Icons */}
-      {type === "file" && (
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-          {staged && (
-            <Tooltip title="Contains staged changes">
-              <CheckCircleIcon sx={{ color: "#4caf50", fontSize: "1rem" }} />
-            </Tooltip>
-          )}
-          {unstaged && (
-            <Tooltip title="Contains unstaged changes">
-              <ErrorIcon sx={{ color: "#ffeb3b", fontSize: "1rem" }} />
-            </Tooltip>
+      {type == "file" && unstaged && (
+        <FormControlLabel
+          control={<Checkbox />}
+          label=""
+          sx={{ position: "absolute" }}
+        />
+      )}
+      <Stack
+        direction="row"
+        alignItems="center"
+        spacing={1}
+        sx={{
+          pl: (level + 1) * 2,
+          cursor: "pointer",
+          bgcolor: isSelected ? "#333" : "transparent", // Dark background if selected
+          "&:hover": {
+            bgcolor: "#444", // Slightly lighter dark background on hover
+          },
+        }}
+        onClick={type == "file" ? () => onClick(id) : () => {}}
+      >
+        <Box>
+          {type === "folder" ? (
+            <FolderIcon sx={{ color: "#bb86fc" }} />
+          ) : (
+            <InsertDriveFileIcon sx={{ color: "#03dac6" }} />
           )}
         </Box>
-      )}
+        <Typography variant="body1" sx={{ color: "white" }}>
+          {name}
+        </Typography>
+
+        {/* Staged and Unstaged Icons */}
+        {type === "file" && (
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            {staged && (
+              <Tooltip title="Contains staged changes">
+                <CheckCircleIcon sx={{ color: "#4caf50", fontSize: "1rem" }} />
+              </Tooltip>
+            )}
+            {unstaged && (
+              <Tooltip title="Contains unstaged changes">
+                <ErrorIcon sx={{ color: "#ffeb3b", fontSize: "1rem" }} />
+              </Tooltip>
+            )}
+          </Box>
+        )}
+      </Stack>
     </Stack>
   );
 };
