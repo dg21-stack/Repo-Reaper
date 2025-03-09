@@ -122,6 +122,14 @@ export const getDiff = async (branch: string): Promise<any> => {
   return result.data;
 };
 
+export const getStatus = async (branch: string): Promise<any> => {
+  const URL = `${APIUrl}/branches/current/status/${branch}`;
+
+  const result = await axios.get(URL);
+
+  return result.data;
+};
+
 // Stash changes
 export const stashChanges = async (repoPath: string, branch: string): Promise<any> => {
   const URL = `${APIUrl}/stash`;

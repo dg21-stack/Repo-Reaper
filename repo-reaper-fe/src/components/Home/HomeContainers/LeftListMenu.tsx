@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Button, IconButton, Menu, MenuItem, Stack } from "@mui/material";
+import {
+  Button,
+  IconButton,
+  Menu,
+  MenuItem,
+  Stack,
+  Tooltip,
+} from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import { getAllBranches } from "../../../service/CommitHistoryService";
@@ -55,22 +62,24 @@ export const ButtonWithDropdown = ({
   return (
     <Stack direction="row" alignItems="center" spacing={2} width="95%" p={2}>
       {/* Left Side - Branch Dropdown Button */}
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={handleBranchClick}
-        endIcon={<ArrowDropDownIcon />}
-        sx={{
-          flexGrow: 1,
-          bgcolor: "#7289da", // Purple color
-          "&:hover": {
-            bgcolor: "#3700b3",
-          },
-        }}
-        disabled={selectBranchDisabled}
-      >
-        Select Branch
-      </Button>
+      <Tooltip title="Enabled when no unstaged changes">
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleBranchClick}
+          endIcon={<ArrowDropDownIcon />}
+          sx={{
+            flexGrow: 1,
+            bgcolor: "#7289da", // Purple color
+            "&:hover": {
+              bgcolor: "#3700b3",
+            },
+          }}
+          disabled={selectBranchDisabled}
+        >
+          Select Branch
+        </Button>
+      </Tooltip>
 
       {/* Branch Dropdown Menu */}
       <Menu
@@ -84,17 +93,21 @@ export const ButtonWithDropdown = ({
           </MenuItem>
         ))}
       </Menu>
-      <IconButton
-        sx={{ color: "white" }}
-        disabled={addDisabled}
-        onClick={handleAdd}
-      >
-        <Add />
-      </IconButton>
+      <Tooltip title="add to git branch">
+        <IconButton
+          sx={{ color: "white" }}
+          disabled={addDisabled}
+          onClick={handleAdd}
+        >
+          <Add />
+        </IconButton>
+      </Tooltip>
       {/* Right Side - More Options Dropdown Button */}
-      <IconButton onClick={handleClick} sx={{ color: "white" }}>
-        <MoreVertIcon fontSize="medium" />
-      </IconButton>
+      <Tooltip title="extra settings">
+        <IconButton onClick={handleClick} sx={{ color: "white" }}>
+          <MoreVertIcon fontSize="medium" />
+        </IconButton>
+      </Tooltip>
 
       {/* More Options Dropdown Menu */}
       <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>

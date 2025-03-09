@@ -1,7 +1,9 @@
 import React from "react";
-import { Stack, Typography, Box } from "@mui/material";
+import { Stack, Typography, Box, Tooltip } from "@mui/material";
 import FolderIcon from "@mui/icons-material/Folder";
 import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle"; // Icon for staged changes
+import ErrorIcon from "@mui/icons-material/Error"; // Icon for unstaged changes
 
 interface ListItemProps {
   id: string;
@@ -11,6 +13,8 @@ interface ListItemProps {
   path: string;
   isSelected: boolean;
   onClick: (id: string) => void;
+  staged: boolean; // Boolean indicating if the file has staged changes
+  unstaged: boolean; // Boolean indicating if the file has unstaged changes
 }
 
 export const LeftMenuListItem: React.FC<ListItemProps> = ({
@@ -21,6 +25,8 @@ export const LeftMenuListItem: React.FC<ListItemProps> = ({
   path,
   isSelected,
   onClick,
+  staged,
+  unstaged,
 }) => {
   return (
     <Stack
@@ -47,6 +53,22 @@ export const LeftMenuListItem: React.FC<ListItemProps> = ({
       <Typography variant="body1" sx={{ color: "white" }}>
         {name}
       </Typography>
+
+      {/* Staged and Unstaged Icons */}
+      {type === "file" && (
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+          {staged && (
+            <Tooltip title="Contains staged changes">
+              <CheckCircleIcon sx={{ color: "#4caf50", fontSize: "1rem" }} />
+            </Tooltip>
+          )}
+          {unstaged && (
+            <Tooltip title="Contains unstaged changes">
+              <ErrorIcon sx={{ color: "#ffeb3b", fontSize: "1rem" }} />
+            </Tooltip>
+          )}
+        </Box>
+      )}
     </Stack>
   );
 };

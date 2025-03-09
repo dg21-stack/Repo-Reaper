@@ -2,8 +2,13 @@ import { Box, Paper, Breadcrumbs, Typography } from "@mui/material";
 
 interface PdfContainerProps {
   selectedFile: {
+    id: string;
+    name: string;
+    type: "file" | "folder";
+    level: number;
     path: string;
-    diff: string | undefined;
+    diff?: string;
+    stagingStatus?: "staged" | "unstaged" | "untracked";
   } | null;
 }
 

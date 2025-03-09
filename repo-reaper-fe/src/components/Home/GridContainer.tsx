@@ -8,6 +8,7 @@ import {
   add,
   commit,
   getDiff,
+  getStatus,
   push,
   switchBranch,
 } from "../../service/CommitHistoryService";
@@ -15,10 +16,12 @@ import {
 interface FileStructureItem {
   id: string;
   name: string;
-  type: string;
+  type: "file" | "folder";
   level: number;
   path: string;
-  diff: string | undefined;
+  diff?: string;
+  staged?: boolean; // Boolean indicating if the file has staged changes
+  unstaged?: boolean; // Boolean indicating if the file has unstaged changes
 }
 
 interface IGridContainer {
@@ -33,7 +36,8 @@ export const GridContainer = ({
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [gitState, setGitState] = useState<"commit" | "push">("commit");
   const [commitMessage, setCommitMessage] = useState("");
-  const [currentDiff, setCurrentDiff] = useState<[]>([]);
+  const [hasStaging, setHasStaging] = useState(false);
+  const [hasUnstaged, setHasUnstaged] = useState(false);
   const [filePath, setFilePath] = useState<Record<
     string,
     FileStructureItem
@@ -42,20 +46,48 @@ export const GridContainer = ({
   const handleItemClick = (id: string) => {
     setSelectedId(id);
   };
+
   useEffect(() => {
     fetchDiffData();
   }, [currentBranch]);
 
+  const fetchStatusCheck = async () => {
+    if (currentBranch) {
+      const result = await getStatus(currentBranch);
+      if (hasStaging != result.result.hasStaging) {
+        setHasStaging(result.result.hasStaging);
+      }
+      if (hasUnstaged != result.result.hasUnstaged) {
+        setHasUnstaged(result.result.hasUnstaged);
+      }
+      return result;
+    }
+    return null;
+  };
   const fetchDiffData = async () => {
     if (currentBranch) {
-      const result = await getDiff(currentBranch);
-      setCurrentDiff(result.result);
+      // Fetch both the diff data and the status check
+      const [diffResult, statusResult] = await Promise.all([
+        getDiff(currentBranch),
+        fetchStatusCheck(),
+      ]);
 
       setFilePath((prevState) => {
         const updatedFilePaths: Record<string, FileStructureItem> = {};
         let idCounter = 1;
 
-        const addItem = (path: string, isFolder: boolean, diff?: string) => {
+        // Helper function to normalize paths
+        const normalizePath = (path: string) => {
+          return path.replace(/\\/g, "/").replace(/^\/|\/$/g, ""); // Normalize slashes and remove leading/trailing slashes
+        };
+
+        const addItem = (
+          path: string,
+          isFolder: boolean,
+          diff?: string,
+          staged?: boolean,
+          unstaged?: boolean
+        ) => {
           const pathParts = path.split("/");
           const name = pathParts.pop() || path;
           const level = pathParts.length;
@@ -70,11 +102,22 @@ export const GridContainer = ({
             level,
             path,
             diff: isFolder ? undefined : diff,
+            staged, // Boolean indicating if the file has staged changes
+            unstaged, // Boolean indicating if the file has unstaged changes
           };
         };
 
-        Object.keys(result.result).forEach((filePath) => {
-          const pathParts = filePath.split("/");
+        // Normalize staged and unstaged file paths
+        const stagedFiles = new Set(
+          (statusResult?.result.result.staged || []).map(normalizePath)
+        );
+        const unstagedFiles = new Set(
+          (statusResult?.result.result.unstaged || []).map(normalizePath)
+        );
+
+        Object.keys(diffResult.result).forEach((filePath) => {
+          const normalizedFilePath = normalizePath(filePath);
+          const pathParts = normalizedFilePath.split("/");
           let currentPath = "";
 
           pathParts.forEach((part, index) => {
@@ -86,15 +129,24 @@ export const GridContainer = ({
             );
 
             if (!exists) {
+              // Determine if the file has staged or unstaged changes
+              let staged = false;
+              let unstaged = false;
+              if (!isFolder && statusResult) {
+                staged = stagedFiles.has(normalizedFilePath); // Check if the file has staged changes
+                unstaged = unstagedFiles.has(normalizedFilePath); // Check if the file has unstaged changes
+              }
+
               addItem(
                 currentPath,
                 isFolder,
-                isFolder ? undefined : result.result[filePath]
+                isFolder ? undefined : diffResult.result[filePath],
+                staged,
+                unstaged
               );
             }
           });
         });
-
         return updatedFilePaths;
       });
     }
@@ -105,16 +157,18 @@ export const GridContainer = ({
   };
   const handleAdd = async () => {
     await add();
+    fetchDiffData();
   };
   const handleCommit = async () => {
     await commit(commitMessage);
     setGitState("push");
-    setCurrentDiff([]);
+    fetchDiffData();
   };
 
   const handlePush = async () => {
     await push();
     setGitState("commit");
+    fetchDiffData();
   };
 
   const selectedFile = selectedId && filePath ? filePath[selectedId] : null;
@@ -153,10 +207,8 @@ export const GridContainer = ({
             <ButtonWithDropdown
               currentBranch={currentBranch}
               handleAdd={handleAdd}
-              addDisabled={filePath ? Object.keys(filePath).length == 0 : true}
-              selectBranchDisabled={
-                filePath ? Object.keys(filePath).length !== 0 : false
-              }
+              addDisabled={!hasUnstaged}
+              selectBranchDisabled={hasUnstaged}
             />
             <Stack spacing={0} sx={{ mt: 2, flex: 1 }}>
               {filePath &&
@@ -167,6 +219,8 @@ export const GridContainer = ({
                     name={item.name}
                     type={item.type}
                     level={item.level}
+                    staged={item.staged ?? false}
+                    unstaged={item.unstaged ?? false}
                     path={item.path}
                     isSelected={selectedId === item.id}
                     onClick={handleItemClick}
@@ -200,6 +254,7 @@ export const GridContainer = ({
                     color="primary"
                     fullWidth
                     onClick={handleCommit}
+                    disabled={!hasStaging}
                     sx={{
                       bgcolor: "#7289da",
                       "&:hover": {
