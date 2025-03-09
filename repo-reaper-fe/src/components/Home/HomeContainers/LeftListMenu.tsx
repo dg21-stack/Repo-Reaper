@@ -74,6 +74,10 @@ export const ButtonWithDropdown = ({
             "&:hover": {
               bgcolor: "#3700b3",
             },
+            "&.Mui-disabled": {
+              backgroundColor: "#3f3f3f", // Change background color when disabled
+              color: "#767676", // Change text color when disabled
+            },
           }}
           disabled={selectBranchDisabled}
         >

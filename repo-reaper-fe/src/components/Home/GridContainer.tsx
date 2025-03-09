@@ -1,5 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Box, Stack, TextField, Button, Grid, Fade } from "@mui/material";
+import {
+  Box,
+  Stack,
+  TextField,
+  Button,
+  Grid,
+  Fade,
+  Typography,
+} from "@mui/material";
 import { ButtonWithDropdown } from "./HomeContainers/LeftListMenu";
 import { LeftMenuListItem } from "./HomeContainers/LeftMenuListItem";
 import { ButtonRow } from "./HomeContainers/ButtonRow";
@@ -210,8 +218,9 @@ export const GridContainer = ({
               addDisabled={!hasUnstaged}
               selectBranchDisabled={hasUnstaged}
             />
+            <hr style={{ width: "90%" }} />
             <Stack spacing={0} sx={{ mt: 2, flex: 1 }}>
-              {filePath &&
+              {filePath && Object.values(filePath).length > 1 ? (
                 Object.values(filePath).map((item) => (
                   <LeftMenuListItem
                     key={item.id}
@@ -225,15 +234,20 @@ export const GridContainer = ({
                     isSelected={selectedId === item.id}
                     onClick={handleItemClick}
                   />
-                ))}
+                ))
+              ) : (
+                <Typography color="white" textAlign="center">
+                  No new changes!
+                </Typography>
+              )}
             </Stack>
 
             {/* Commit Section */}
             <Box
               sx={{
                 p: 2,
-                bgcolor: "#1e1e1e",
-                borderTop: "1px solid #333",
+                bgcolor: "#36393f",
+                borderTop: "4.5px solid black",
                 position: "absolute",
                 bottom: 0,
                 width: "100%",
@@ -247,7 +261,18 @@ export const GridContainer = ({
                     placeholder="Enter commit message"
                     value={commitMessage}
                     onChange={(e) => setCommitMessage(e.target.value)}
-                    sx={{ bgcolor: "white" }}
+                    sx={{
+                      bgcolor: "white",
+                      "& .MuiInputBase-root.Mui-disabled": {
+                        backgroundColor: "#3f3f3f", // Change background color when disabled
+                        color: "#767676", // Change text color when disabled
+                      },
+                      "& .MuiInputLabel-root.Mui-disabled": {
+                        backgroundColor: "#343333",
+                        color: "#767676", // Change text color when disabled
+                      },
+                    }}
+                    disabled={!hasStaging}
                   />
                   <Button
                     variant="contained"
@@ -259,6 +284,10 @@ export const GridContainer = ({
                       bgcolor: "#7289da",
                       "&:hover": {
                         bgcolor: "#3700b3",
+                      },
+                      "&.Mui-disabled": {
+                        backgroundColor: "#3f3f3f", // Change background color when disabled
+                        color: "#767676", // Change text color when disabled
                       },
                     }}
                   >

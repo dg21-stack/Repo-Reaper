@@ -16,6 +16,10 @@ export const ButtonRow = () => {
             "&:hover": {
               bgcolor: "#3700b3",
             },
+            "&.Mui-disabled": {
+              backgroundColor: "#3f3f3f", // Change background color when disabled
+              color: "#767676", // Change text color when disabled
+            },
           }}
         >
           Repo History
@@ -26,7 +30,10 @@ export const ButtonRow = () => {
           disabled
           sx={{
             flex: 1,
-            bgcolor: "#b0bec5", // Disabled color
+            "&.Mui-disabled": {
+              backgroundColor: "#3f3f3f", // Change background color when disabled
+              color: "#767676", // Change text color when disabled
+            },
           }}
         >
           Misc. Function 2
@@ -37,7 +44,10 @@ export const ButtonRow = () => {
           disabled
           sx={{
             flex: 1,
-            bgcolor: "#b0bec5", // Disabled color
+            "&.Mui-disabled": {
+              backgroundColor: "#3f3f3f", // Change background color when disabled
+              color: "#767676", // Change text color when disabled
+            },
           }}
         >
           Misc. Function 3

@@ -117,8 +117,14 @@ export const PdfContainer = ({ selectedFile }: PdfContainerProps) => {
         {selectedFile?.diff ? (
           renderDiffLines(selectedFile.diff)
         ) : (
-          <Typography variant="body1" sx={{ color: "text.secondary" }}>
-            No file selected or no diff available.
+          <Typography
+            variant="body1"
+            sx={{
+              color: "white",
+              textAlign: "center",
+            }}
+          >
+            No files selected
           </Typography>
         )}
       </Paper>
