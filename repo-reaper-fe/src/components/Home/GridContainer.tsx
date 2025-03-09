@@ -7,10 +7,8 @@ import {
   Grid,
   Fade,
   Typography,
-  FormGroup,
 } from "@mui/material";
 import { ButtonWithDropdown } from "./HomeContainers/LeftListMenu";
-import { LeftMenuListItem } from "./HomeContainers/LeftMenuListItem";
 import { ButtonRow } from "./HomeContainers/ButtonRow";
 import { PdfContainer } from "./HomeContainers/EmbeddedBinariesComponent";
 import {
@@ -22,8 +20,11 @@ import {
   push,
   switchBranch,
 } from "../../service/CommitHistoryService";
+import { SimpleTreeView } from "@mui/x-tree-view";
+import { ChevronRight, ExpandMore } from "@mui/icons-material";
+import { LeftMenuListItem } from "./HomeContainers/LeftMenuListItem";
 
-interface FileStructureItem {
+export interface FileStructureItem {
   id: string;
   name: string;
   type: "file" | "folder";
@@ -32,6 +33,7 @@ interface FileStructureItem {
   diff?: string;
   staged?: boolean; // Boolean indicating if the file has staged changes
   unstaged?: boolean; // Boolean indicating if the file has unstaged changes
+  children?: FileStructureItem[]; // Optional children for folders
 }
 
 interface IGridContainer {
@@ -61,6 +63,21 @@ export const GridContainer = ({
     fetchDiff();
   }, [currentBranch]);
 
+  const [fileStructure, setFileStructure] = useState<any>({});
+
+  const fetchStatus = async () => {
+    if (currentBranch) {
+      const result = await getStatus(currentBranch);
+      console.log(result);
+
+      setFileStructure(result.result);
+    }
+  };
+
+  useEffect(() => {
+    fetchStatus();
+  }, [currentBranch]);
+
   const fetchDiff = async () => {
     if (currentBranch) {
       const result = await getDiff(currentBranch);
@@ -86,8 +103,8 @@ export const GridContainer = ({
     fetchDiff();
   };
 
-  const handleAddSpecific = async () => {
-    await addSpecific([]);
+  const handleAddSpecific = async (filePaths: string[]) => {
+    await addSpecific(filePaths);
     fetchDiff();
   };
 
@@ -104,6 +121,7 @@ export const GridContainer = ({
   };
 
   const selectedFile = selectedId && filePath ? filePath[selectedId] : null;
+  console.log(selectedId);
   return (
     <Fade in={true}>
       <Grid
@@ -143,30 +161,43 @@ export const GridContainer = ({
               selectBranchDisabled={hasUnstaged}
             />
             <hr style={{ width: "90%" }} />
-            <Stack spacing={0} sx={{ mt: 2, flex: 1 }}>
-              {filePath && Object.values(filePath).length > 1 ? (
-                Object.values(filePath).map((item) => (
-                  <FormGroup>
-                    <LeftMenuListItem
-                      key={item.id}
-                      id={item.id}
-                      name={item.name}
-                      type={item.type}
-                      level={item.level}
-                      staged={item.staged ?? false}
-                      unstaged={item.unstaged ?? false}
-                      path={item.path}
-                      isSelected={selectedId === item.id}
-                      onClick={handleItemClick}
-                    />
-                  </FormGroup>
-                ))
-              ) : (
-                <Typography color="white" textAlign="center">
-                  No new changes!
-                </Typography>
-              )}
-            </Stack>
+            <Box
+              sx={{
+                flex: 1,
+                overflowY: "auto",
+                p: 1,
+              }}
+            >
+              {fileStructure.top_level_files &&
+                fileStructure.top_level_files.map((item: string) => (
+                  <LeftMenuListItem
+                    key={item}
+                    id={item}
+                    name={item}
+                    type={fileStructure.structure[item].type}
+                    level={0}
+                    staged={
+                      fileStructure.structure[item].type == "file"
+                        ? fileStructure.status[item].staged
+                        : false
+                    }
+                    unstaged={
+                      fileStructure.structure[item].type == "file"
+                        ? fileStructure.status[item].nonstaged
+                        : false
+                    }
+                    path={fileStructure.structure[item].path}
+                    isSelected={
+                      fileStructure.structure[item].path == selectedId
+                    }
+                    onClick={handleItemClick}
+                    children={fileStructure.structure[item].children}
+                    fileStructure={fileStructure}
+                    filePath={filePath}
+                    selectedId={selectedId ?? ""}
+                  />
+                ))}
+            </Box>
 
             {/* Commit Section */}
             <Box

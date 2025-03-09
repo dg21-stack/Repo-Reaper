@@ -263,7 +263,7 @@ def gitDiff(branch):
         return jsonify({"error": str(e)}), 500
     
 @app.route('/branches/current/status/<branch>', methods=['GET'])
-def gitStatusAndDiff(branch):
+def gitStatus(branch):
     repo_path = request.args.get("repo_path")
     if not repo_path:
         repo_path = repo_manager.get_active_repo_path()

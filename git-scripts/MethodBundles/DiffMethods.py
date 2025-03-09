@@ -12,7 +12,7 @@ class DiffMethods:
                 result,
                 flags=re.DOTALL | re.MULTILINE
             )
-            staged_files, unstaged_files = self.git_status()
+            staged_files, unstaged_files = self._get_staged_and_unstaged()
             has_staging = len(staged_files) > 0
             has_unstaged = len(unstaged_files) > 0
 
@@ -39,7 +39,7 @@ class DiffMethods:
 
             return returning_dict
 
-    def git_status(self, branch = None):
+    def _get_staged_and_unstaged(self, branch = None):
         if not branch:
             branch = self.current_branch
         
@@ -56,11 +56,63 @@ class DiffMethods:
             unstaged_section = result.split("Changes not staged for commit")[-1].split("Untracked files")[0]
             unstaged_files = re.findall(r"modified:\s+([^\s]+)", unstaged_section)
 
+
         return set(staged_files), set(unstaged_files)
+    
+    def git_status(self, branch=None):
+        staged_files, unstaged_files = self._get_staged_and_unstaged(branch)
 
+        # Flat dictionary for file/folder structure
+        file_structure = {}
+        # Single-dimensional dictionary for file status
+        file_status = {}
 
+        def add_to_structure(file_list):
+            for i in range(len(file_list)):
+                current_name = file_list[i]
+                is_file = i == len(file_list) - 1
 
-                
-                
-                    
-                    
+                if current_name not in file_structure:
+                    file_structure[current_name] = {
+                        "type": "file" if is_file else "folder",
+                        "children": set(),  # Use a set to avoid duplicates,
+                        "path": '/'.join(file_list[:i+1])
+                    }
+
+                if i > 0:
+                    parent_name = file_list[i - 1]
+                    file_structure[parent_name]["children"].add(current_name)
+
+        def add_to_status(file_list, status):
+            file_name = file_list[-1]  # Last element is the file name
+            if file_name not in file_status:
+                file_status[file_name] = {"staged": False, "nonstaged": False}
+            file_status[file_name][status] = True
+
+        # Process staged files
+        for file in staged_files:
+            file_list = file.split('/')
+            add_to_structure(file_list)
+            add_to_status(file_list, "staged")
+
+        # Process unstaged files
+        for file in unstaged_files:
+            file_list = file.split('/')
+            add_to_structure(file_list)
+            add_to_status(file_list, "nonstaged")
+
+        # Convert sets to lists for the final output
+        for name, node in file_structure.items():
+            node["children"] = list(node["children"])
+
+        top_level_files = [
+            name
+            for name,node in file_structure.items()
+            if not any(name in node_children["children"] for node_children in file_structure.values())
+        ]
+
+        return {
+            "structure": file_structure,
+            "status": file_status,
+            "top_level_files": top_level_files,
+        }
