@@ -152,8 +152,11 @@ export const GridContainer = ({
           >
             <ButtonWithDropdown
               currentBranch={currentBranch}
-              currentDiff={currentDiff}
               handleAdd={handleAdd}
+              addDisabled={filePath ? Object.keys(filePath).length == 0 : true}
+              selectBranchDisabled={
+                filePath ? Object.keys(filePath).length !== 0 : false
+              }
             />
             <Stack spacing={0} sx={{ mt: 2, flex: 1 }}>
               {filePath &&

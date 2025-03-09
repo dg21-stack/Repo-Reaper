@@ -7,20 +7,22 @@ import { Add } from "@mui/icons-material";
 
 interface IButtonWithDropdown {
   currentBranch: string | null;
-  currentDiff: [];
   handleAdd: () => void;
+  addDisabled: boolean;
+  selectBranchDisabled: boolean;
 }
 export const ButtonWithDropdown = ({
   currentBranch,
-  currentDiff,
   handleAdd,
+  addDisabled,
+  selectBranchDisabled,
 }: IButtonWithDropdown) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [branchAnchorEl, setBranchAnchorEl] = useState<null | HTMLElement>(
     null
   );
   const [branches, setBranches] = useState<string[]>([]);
-  const [addClicked, setAddClicked] = useState(false);
+
   useEffect(() => {
     fetchBranchData();
   }, [currentBranch]);
@@ -65,7 +67,7 @@ export const ButtonWithDropdown = ({
             bgcolor: "#3700b3",
           },
         }}
-        disabled={Object.keys(currentDiff).length !== 0}
+        disabled={selectBranchDisabled}
       >
         Select Branch
       </Button>
@@ -84,7 +86,7 @@ export const ButtonWithDropdown = ({
       </Menu>
       <IconButton
         sx={{ color: "white" }}
-        disabled={currentDiff.length < 2 || addClicked}
+        disabled={addDisabled}
         onClick={handleAdd}
       >
         <Add />

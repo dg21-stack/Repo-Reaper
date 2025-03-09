@@ -240,6 +240,21 @@ def gitDiff(branch):
         return jsonify({"repo-path": repo_path, "branch": branch, "result": result})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    
+@app.route('/branches/current/status/<branch>', methods=['GET'])
+def gitStatus(branch):
+    repo_path = request.args.get("repo_path")
+    if not repo_path:
+        repo_path = repo_manager.get_active_repo_path()
+    
+    if not repo_path:
+        return jsonify({"error": "No repo_path provided and no active repository selected"}), 400
+    
+    try:
+        result = repo_manager.get_repo_session(repo_path).git_status(branch)
+        return jsonify({"repo-path": repo_path, "branch": branch, "result": result})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/stash', methods=['POST'])
 def stash_changes():

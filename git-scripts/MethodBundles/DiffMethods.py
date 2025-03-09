@@ -17,3 +17,19 @@ class DiffMethods:
                 diff_dict[file_name] = changes.strip()
 
             return diff_dict
+
+    def git_status(self, branch = None):
+        if not branch:
+            branch = self.current_branch
+        
+        result = self._run_git_command(["git","status"])
+
+
+        return len(result.split("not staged for commit:"))
+
+
+
+        
+        
+            
+            
