@@ -100,28 +100,29 @@ export const GridContainer = ({
   };
   const handleAddAll = async () => {
     await addAll();
-    fetchDiff();
+    await fetchDiff();
   };
 
   const handleAddSpecific = async (filePaths: string[]) => {
     await addSpecific(filePaths);
-    fetchDiff();
+    await fetchDiff();
   };
 
   const handleCommit = async () => {
     await commit(commitMessage);
     setGitState("push");
-    fetchDiff();
+    await fetchDiff();
+    await fetchStatus();
   };
 
   const handlePush = async () => {
     await push();
     setGitState("commit");
-    fetchDiff();
+    await fetchDiff();
+    await fetchStatus();
   };
 
   const selectedFile = selectedId && filePath ? filePath[selectedId] : null;
-  console.log(selectedId);
   return (
     <Fade in={true}>
       <Grid
