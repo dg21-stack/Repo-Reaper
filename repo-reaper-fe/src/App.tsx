@@ -25,8 +25,8 @@ function App() {
     const setActiveRepository = async () => {
       try {
         // Replace "C:/Users/Daniel/Repo-Reaper" with the actual repo path you want to set
-        const response = await initializeActiveRepo(
-          "C:/Users/Daniel/Repo-Reaper"
+        const response = await initializeActiveRepo( // TODO: Make this able to be null // TODO: Also need to make this work for mac since different path names 
+          "/Users/maxpintchouk/Code/Repo-Reaper"
         );
         setLoading(false);
         setCurrentBranch(response.current_branch);

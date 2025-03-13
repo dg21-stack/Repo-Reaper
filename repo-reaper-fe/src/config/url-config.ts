@@ -2,6 +2,6 @@
 
 export const getConfig = () => {
     return {
-        APIUrl: "http://localhost:5000"
+        APIUrl: "http://127.0.0.1:5000"
     }
 }
