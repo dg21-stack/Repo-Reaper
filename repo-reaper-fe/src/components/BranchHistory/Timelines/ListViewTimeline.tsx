@@ -16,6 +16,7 @@ import TimelineConnector from "@mui/lab/TimelineConnector";
 import TimelineDot from "@mui/lab/TimelineDot";
 import Brightness1OutlinedIcon from "@mui/icons-material/Brightness1Outlined";
 import CheckIcon from "@mui/icons-material/Check";
+import { formatTimestamp } from "../../Utils/FormatTimestamp";
 
 interface ICustomizedTimeline {
   branchName: string;
@@ -44,7 +45,6 @@ export default function ListViewTimeline({
     mouseX: number;
     mouseY: number;
   } | null>(null);
-
   const handleContextMenu = (event: React.MouseEvent) => {
     event.preventDefault(); // Prevent the default context menu
     setContextMenu(
@@ -126,24 +126,24 @@ export default function ListViewTimeline({
               onClick={(e: React.MouseEvent) => e.stopPropagation()}
               variant="standard"
               InputProps={{
-                disableUnderline: false, // Remove the underline
+                disableUnderline: false,
                 sx: {
-                  fontSize: "1.25rem", // Match Typography h6 size
-                  fontWeight: 400, // Match Typography h6 weight
-                  color: "white", // Match Typography h6 color
-                  padding: 0, // Remove padding to match Typography
-                  margin: 0, // Remove margin to match Typography
+                  fontSize: "1.25rem",
+                  fontWeight: 400,
+                  color: "white",
+                  padding: 0,
+                  margin: 0,
                   "& .MuiInputBase-input": {
-                    padding: 0, // Remove padding to match Typography
-                    margin: 0, // Remove margin to match Typography
-                    textAlign: "left", // Align text to the left
-                    overflow: "hidden", // Hide overflow
-                    textOverflow: "ellipsis", // Add ellipsis for overflow
-                    whiteSpace: "nowrap", // Prevent text from wrapping
+                    padding: 0,
+                    margin: 0,
+                    textAlign: "left",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
                   },
                 },
               }}
-              autoFocus // Automatically focus the TextField when it appears
+              autoFocus
             />
             <Button
               variant="contained"
@@ -169,7 +169,7 @@ export default function ListViewTimeline({
       {/* Latest Updated Time */}
       <TableCell sx={{ padding: "5px", borderBottom: "1px solid #40444b" }}>
         <Typography variant="h6" color="white">
-          {new Date(latestUpdatedTime).toLocaleString()}
+          {formatTimestamp(latestUpdatedTime)}
         </Typography>
       </TableCell>
 
