@@ -37,7 +37,6 @@ function App() {
         console.error(error);
       }
     };
-
     setActiveRepository();
   }, []);
 
