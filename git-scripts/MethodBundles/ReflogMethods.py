@@ -4,6 +4,7 @@ class ReflogMethods:
         
         return self._reflog_iter(result)
         
+        
     
     def get_reflog_specific_branch(self, branch):
         query = ["git", "reflog"]
